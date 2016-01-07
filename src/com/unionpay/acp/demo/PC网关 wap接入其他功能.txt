@@ -1,0 +1,28 @@
+1.03 分期付款问题
+
+/*** 特殊用法1,实现PC端商户界面点击银行网银图标直接跳转到银行网银支付的功能***/
+/***实现该功能需：1）上送issInsCode字段，该字段的值参考《平台接入接口规范-第5部分-附录》（全渠道平台银行名称-简码对照表）  2）联系银联业运开通了商户号的网银前置权限（发邮件到operation@unionpay.com）***/
+//requestData.put("issInsCode", "ABC");                 //发卡机构代码
+
+
+/***特殊用法2,商户直接上送卡号并在银联页面锁定该卡号支付***/
+/*** 实现该功能需 上送以下2个字段 ***/
+//requestData.put("accNo", "6221558812340000");          //卡号
+//requestData.put("reserved", "{cardNumberLock=1}");     //银联定义的系统保留域，值不能修改
+
+//可以去掉----
+/*** 特殊用法3，实现对身份证和姓名的回显和校验，也可以与特殊用法3合并***/
+/*** 实现该功能需 1)上送customerInfo 2）联系银联业运开通了商户号的证件和姓名回显校验权限（发邮件到operation@unionpay.com）***/
+//requestData.put("customerInfo", getCustomer(DemoBase.version)); //银行卡验证信息及身份信息
+
+
+//可以去掉-----
+//contentData.put("subMerId", "");						//二级商户代码，商户类型为平台类商户接入时必须上送
+//contentData.put("subMerName", "");					//二级商户全称，商户类型为平台类商户接入时必须上送
+//contentData.put("subMerAbbr", "");					//二级商户简称，商户类型为平台类商户接入时必须上送
+
+//可以去掉 frontFailUrl orderTimeoutInterval payTimeout----
+//有特殊需求的时候才上送
+//data.put("frontFailUrl", "http://商户地址:端口/ACPSample_PCGate/frontRcvResponse");//支付失败跳转页面
+//data.put("orderTimeoutInterval", "3000"); 			//订单接收超时时间（防钓鱼使用）
+//data.put("payTimeout", "");        				    //格式为YYYYDDhhmmss 打开银联页面后订单支付超时间，商户设定的支付超时时间；超过此时间用户支付成功的交易不通知到商户，系统自动退款，大约5个工作日金额返还到用户账户（一般情况下使用银行网银支付才会出现）

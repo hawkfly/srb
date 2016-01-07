@@ -1,0 +1,14 @@
+<!-- keywordtypestpl -->
+{#template MAIN}
+	{#if $T.mark == 'news'}
+		{#foreach $T.Lists as row}
+			{#include keywords root=$T.row}
+		{#/for}
+	{#/if}
+{#/template MAIN}
+<!-- 新闻关键字模板 -->
+{#template keywords}
+	<input type="checkbox" typename="checkbox" name="{$T.comname}" id="{$T.comid}" label="{$T.name}" value="{$T.name}" 
+	onblur="try{addInputboxDataForSaving('{$T.comid}', this);}catch(e){logErrorsAsJsFileLoad(e);}" onkeypress="return onInputBoxKeyPress(event);"
+	separator=" " onclick="this.focus();">{$T.name}
+{#/template keywords}

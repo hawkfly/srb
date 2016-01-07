@@ -1,0 +1,157 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-size: 12px;
+	font-family: "宋体";
+	color: #666;
+}
+a {
+	font-family: Verdana, Arial, Helvetica, sans-serif, "宋体";
+	text-decoration: none;
+	color: #666666;
+}
+a:hover {
+	text-decoration: none;
+	color: #04529c;
+}
+ul li {
+	list-style-type: none;
+}
+.banner {
+	background-image: url(../images/banner-right.jpg);
+	background-repeat: repeat-x;
+	height: 76px;
+	width: 100%;
+}
+.banner .bannerLeft {
+	background-image: url(../images/banner.jpg);
+	height: 76px;
+	background-repeat: no-repeat;
+	width: 100%;
+}
+.banner .bannerLeft .menu {
+	float: left;
+	width: 873px;
+	height: 76px;
+}
+.banner .bannerLeft .menu a {
+	height: 70px;
+	width: 92px;
+	color: #FFF;
+	text-align: center;
+	display: block;
+	background-image: url(../images/menue-bg.gif);
+	background-repeat: no-repeat;
+	background-position: 2px 0px;
+	line-height: 12px;
+}
+.banner .bannerLeft .menu a:hover {
+	background-image: url(../images/menue-bg-hover.gif);
+	background-position: 0px 0px;
+}
+.now {
+	height: 70px;
+	width: 92px;
+	color: #052e71!important;
+	text-align: center;
+	display: block;
+	background-image: url(../images/menue-bg-hover.gif) !important;
+	background-position: 0px 0px!important;
+	line-height: 12px;
+	font-weight: bold;
+}
+.banner .bannerLeft .menu table tr td a div {
+	height: 40px;
+	position: relative;
+	text-align: center;
+}
+.banner .bannerLeft .menu table tr td a img {
+	bottom: 0;
+	display: block;
+	position: absolute;
+	left: 35%;
+}
+.banner .bannerLeft .personalInfo {
+	float: right;
+	width: 145px;
+	line-height: 18px;
+	color: #def1fe;
+	padding-top: 11px;
+	padding-left: 8px;
+}
+.banner .bannerLeft .personalInfo span a {
+	color: #def1fe;
+	line-height: 28px;
+}
+.banner .bannerLeft .personalInfo span a:hover {
+	text-decoration: underline;
+	color: #FFF;
+}
+.wrap{
+	background-image: url(../images/righttop-bg.jpg);
+	background-position: top;
+	background-repeat: repeat-x;
+	width: 100%;
+}.lefeMenuOpen {
+	width: 192px;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #70a6bc;
+	background-color: #def2f8;
+	height: 600px;
+	padding-bottom: 20px;
+	float: left;
+}
+.lefeMenuOpen .dhcd{
+	line-height: 31px;
+	color: #052e71;
+	background-image: url(../images/leftMenu-bgt.jpg);
+	font-size: 14px;
+	font-weight: bold;
+	}
+.lefeMenuOpen .menuUL {
+	background-color: #def2f8;
+	width: 192px;
+	display: block;
+}
+.lefeMenuOpen .menuUL li {
+	color: #03294a;
+	background-image: url(../images/menuLI-line.jpg);
+	background-repeat: no-repeat;
+	background-position: bottom;
+	text-indent: 10px;
+	line-height: 30px;
+}
+.lefeMenuOpen .menuUL li img {
+	margin-right: 8px;
+	margin-top: 5px;
+	margin-bottom: 6px;
+	vertical-align: middle;
+}
+.lefeMenuOpen .menuUL li a {
+	color: #03294a;
+}
+.lefeMenuOpen .menuUL li a:hover {
+	color: #03294a;
+	font-weight: bold;
+}
+.lefeMenuOpen .menuUL ul li {
+	text-indent: 37px;
+}
+.rightContent {
+	float: left;
+	height: 600px;
+	width: 750px;
+	padding-left: 13px;
+	padding-top: 26px;
+}
+.lefeMenuClose {
+	width: 30px;
+	height: 600px;
+	background-color: #dff2f8;
+}

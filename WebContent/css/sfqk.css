@@ -1,0 +1,66 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-size: 12px;
+	font-family: "微软雅黑";
+	color: #666;
+}
+td {
+	border:1px solid #fff;
+}
+a {
+	font-family: "微软雅黑";
+	text-decoration: none;
+	color: #666666;
+}
+a:hover {
+	text-decoration: none;
+	color: #FF0000;
+	font-family: "微软雅黑";
+}
+ul li {
+	list-style-type: none;
+}
+.sh_1 {
+	text-align:center;
+	color:#000;
+	line-height:20px;
+	font-size:12px;
+}
+.sh_1 .top-bt {
+	height: 35px;
+	color:#333;
+	line-height:18px;
+	padding:0 4px;
+	font-size:13px;
+	font-weight:bold;
+	word-wrap:break-word;
+	background-color:#4AB7FF;
+}
+.sh_1 .listbg_title {
+	background-color: #4B9EBE;
+	
+}
+.sh_1 .listbg_left {
+	background-color: #B4C34E;
+}
+.sh_1 .listbg_4 {
+	background-color: #D7E9F7;
+}
+.sh_1 .listbg_right_4 {
+	text-align:center;
+	line-height:20px;
+	font-size:12px;
+	border-right-width: 4px;
+	border-right-style: solid;
+	border-right-color: #979494;
+	background-color: #D7E9F7;
+}
+.sh_1 .listbg_0 {
+	background-color: #fff;
+}

@@ -1,0 +1,13 @@
+
+<div id="wrapper" >
+    <ul>
+        <% for(var i=0; i<notices.length; i++) { %>
+            <li>
+                <div class="list">
+                    <div class="pic"><span style="background-image: url(<%= notices[i].index_pic %>)" /></div>
+                    <div class="content"><%= notices[i].content%><span><%= notices[i].send_date%></span> </div>
+                </div>
+            </li>
+        <% } %>
+    </ul>
+</div>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	  	http://www.springframework.org/schema/aop
+	  	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"  default-autowire="byName">
+
+	<!-- <context:component-scan base-package="com.pansoft"/> -->
+	<bean class="com.pansoft.jbsf.context.SpringContext"></bean> 
+	
+	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"></bean>
+
+	<bean id="configBean" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	  <property name="location" value="classpath:conf/set.properties"></property>
+	</bean>
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName">
+		  <value>${jdbc.driver}</value>
+		</property>
+		<property name="url">
+		  <value>${jdbc.url}</value>
+		</property>
+		<property name="username">
+		  <value>${jdbc.user}</value>
+		</property>
+		<property name="password">
+		  <value>${jdbc.password}</value>
+		</property>
+		<property name= "validationQuery" value="select 1 from dual"/>
+	</bean>
+	
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:/conf/sqlMapConfig.xml" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="lobHandler" ref="lobHandler"/>
+	</bean>
+
+	<!-- 定义事务管理器 --> 
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>  
+	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!--启动spring注解功能-->
+    <tx:annotation-driven transaction-manager="txManager" />
+	
+	<aop:config>
+		<aop:pointcut id="baseServiceMethods" expression="execution(* com.archie.dao.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="baseServiceMethods" />
+	</aop:config>
+
+	<aop:aspectj-autoproxy />
+
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="select*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="find*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+			<tx:method name="update*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+			<tx:method name="add*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+			<tx:method name="delete*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+		</tx:attributes>
+	</tx:advice>
+</beans>

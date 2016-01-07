@@ -1,0 +1,154 @@
+@charset "utf-8";
+/* CSS Document */
+#gn_tab {
+	background-image: url(../images/tab_bg.gif);
+	background-repeat: repeat-x;
+}
+#gn_tab .tabs {
+	width: 1000px;
+	margin: 0 auto;
+	height: 51px;
+	background-image: url(../images/tab_bg.gif);
+	background-repeat: repeat-x;
+	padding-top: 8px;
+}
+#gn_tab .tabs li {
+	cursor: pointer;
+	float: left;
+	margin-right: 5px;
+	height: 43px;
+}
+#gn_tab .content {
+	width: 100%;
+
+}
+#gn_tab .normaltab a {
+	background-image: none;
+	color: #083b5a;
+	font-size: 14px;
+	font-family: "宋体";
+	float: left;
+	padding-left: 15px;
+	background-image: none;
+	line-height: 43px;
+}
+#gn_tab .normaltab a span {
+	display: block;
+	background-image: none;
+	background-image: url(../images/line_topmenu.gif);
+	padding-right: 15px;
+	line-height: 43px;
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+#gn_tab .hovertab a {
+	color: #083b5a;
+	font-size: 14px;
+	font-family: "宋体";
+	background-image: url(../images/tabs_now_lbg.png);
+	background-repeat: no-repeat;
+	background-position: left top;
+	float: left;
+	padding-left: 15px;
+	font-weight: bold;
+	line-height: 43px;
+}
+#gn_tab .hovertab a span {
+	background-image: url(../images/tabs_now_rbg.png);
+	background-repeat: no-repeat;
+	background-position: right top;
+	display: block;
+	font-weight: bold;
+	padding-right: 15px;
+}
+#gn_tab .tabs_home {
+	margin-right: 3px;
+	top: 3px;
+	vertical-align: middle;
+	margin-top: 7px;
+	margin-bottom: 14px;
+	margin-left: 0;
+}
+
+
+.tab_two {
+	width: 25px;
+	height: 100%;
+	float: left;
+	margin-top: -1px;
+}
+.tab_two li {
+	width: 25px;
+	display: block;
+	cursor: pointer;
+	position: relative;
+	right: -1px;
+	z-index: 100;
+}
+.tab_two .dis {
+	display: block;
+}
+.tab_two .undis {
+	display: none;
+}
+.tab_two .normaltab_tow a {
+	background-image: none;
+	color: #083b5a;
+	font-size: 14px;
+	font-family: "宋体";
+	float: left;
+	background-image: url(../images/two_tabs_2_1.gif);
+	background-repeat: no-repeat;
+	background-position: 0px top;
+	line-height: normal;
+	padding-top: 35px;
+	width: 25px;
+}
+.tab_two .normaltab_tow a span {
+	display: block;
+	background-image: url(../images/two_tabs_2_2.gif);
+	background-repeat: no-repeat;
+	background-position: 0px bottom;
+	padding-bottom: 40px;
+	padding-left: 7px;
+}
+.tab_two .hovertab_tow a {
+	color: #083b5a;
+	font-size: 14px;
+	font-family: "宋体";
+	background-image: url(../images/two_tabs_1_1.gif);
+	background-repeat: no-repeat;
+	background-position: 0px top;
+	float: left;
+	font-weight: bold;
+	line-height: normal;
+	padding-top: 35px;
+	width: 25px;
+}
+.tab_two .hovertab_tow a span {
+	display: block;
+	background-image: url(../images/two_tabs_1_2.gif);
+	background-position: 0px bottom;
+	padding-bottom: 40px;
+	padding-left: 7px;
+}
+.tab_two .normaltab_tow, .tab_two .hovertab_tow {
+	margin-bottom: -12px;
+	float: left;
+}
+.tab_two .now {
+	z-index: 999;
+	position: relative;
+	right: -2px;
+}
+.content_tow {
+	/*width: 1050px;*/
+	background-color: #FFFFFF;
+	float: left;
+	margin-bottom: 10px;
+	border: 1px solid #c7c8c8;
+	height: 800px;
+	width: 970px;
+	background-image: url("../images/two_gnbg_m.png");
+	background-repeat: repeat-x;
+}

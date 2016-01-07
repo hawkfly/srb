@@ -1,0 +1,42 @@
+.ui-jqgrid .ui-jqgrid-title{font-size:13px;}  
+.ui-jqgrid-sortable {font-size:13px;}  
+.headsearch {
+  margin-top:10px;
+  margin-left:10px
+}
+.fpcjbody_div {
+  margin-top :10px;
+  margin-right:20px;
+  margin-left:10px;
+}
+.fpcjbtn_div {
+  width :100%;
+  padding-top:10px;
+  padding-right:10px
+
+}
+
+.fpcjbtn_div .btn{
+	margin-right:10px;
+	float: right;
+}
+
+.labelclass{
+  float: left;
+  margin-top: 5px;
+}
+.inputclass{
+  float: left;
+  width:100px; 
+  margin-left: 2px;
+  margin-right: 3px;
+}
+
+
+
+.btnclass{
+  width:90px; 
+}
+
+
+

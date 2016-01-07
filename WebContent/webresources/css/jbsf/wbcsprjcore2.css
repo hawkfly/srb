@@ -1,0 +1,172 @@
+.cls-data-table-detail td{
+	padding : 3px;
+}
+.cls-inputbox-normal,.cls-inputbox-mouseover,.cls-inputbox-focus{
+	font-size: 13px !important;
+	line-height: 20px !important;
+	color: #666 !important;
+	background-image: url(../../skin/blue/images/input_bg.gif) !important;
+	background-repeat: repeat-x !important;
+	border: 1px solid #c6c5c5 !important;
+	text-indent: 3px !important;
+	/* width: 200px; */
+	height: 25px;
+}
+.cls-data-table-detail-notopborder{
+	border-right-color: #c0c0c0;
+	border-bottom-color: #c0c0c0;
+	border-left-color: #c0c0c0;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-collapse: collapse;
+}
+.cls-tabtitle-top-table{
+	border-bottom: 2px solid #6cb7ed   !important;
+}
+.cls-tabtitle-top-selected{
+	background-image: url(../../skin/blue/images/tabs_1.gif)  !important;
+}
+.cls-tabtitle-top-deselected{
+	background-image: url(../../skin/blue/images/tabs_2.gif)  !important;
+}
+
+.cls-data-table-detail td{
+	padding : 3px;
+}
+.cls-data-table-detail{
+	BORDER-COLLAPSE:   collapse;
+	border:0px solid #FFF !important;
+}
+.cls-data-th-detail{/*数据细览报表显示数据标题<td/>的样式*/
+	/*background-color: #ACCCFF;
+	heigth:30px;
+	text-align: center;*/ 
+	color: #18385e;
+	background-color: transparent !important;
+	border:0px solid #C0C0C0 !important;
+	font-weight:bold;
+}
+.cls-data-td-editdetail{/*以编辑模式显示可编辑数据细览报表显示数据<td/>的样式*/
+	border:0px solid #C0C0C0 !important;
+	min-height:25px;height:25px;color:#666;
+	background: none repeat scroll 0 0 transparent !important;
+}
+.cls-img-normal{/*<img/>默认样式*/
+	cursor:pointer;
+	width: 104px;
+	height: 68px;
+}
+.cls-img-mouseover{/*<img/>onmouserover样式*/
+	border:0px solid #6466CB !important;
+	cursor:hand;
+	width: 104px;
+	height: 68px;
+}
+.savebuttonClsCBSS{
+	background-image: url(../../skin/blue/images/btn_1.png);
+	background-repeat: no-repeat;
+	height: 35px;
+	width: 104px;
+	font-size: 14px;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+	color: #011e4a;
+	border: 0px;
+	margin-top: 30px;
+	margin-left: 45%;
+}
+.savebuttonOver{
+	background-image: url(../../skin/blue/images/btn_2.png);
+	background-repeat: no-repeat;
+	height: 35px;
+	width: 104px;
+	font-size: 14px;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+	color: #011e4a;
+	border: 0px;
+	margin-top: 30px;
+	margin-left: 45%;
+}
+.cls-data-th-list,.cls-data-th-editlist {/*数据自动列表报表数据标题行每个<td/>的样式#3AA8F3/#64A5F8*/
+	background-image: url(../../skin/blue/images/list_table_bg.gif) !important;
+	/*width: 734px;*/
+	height: 30px;
+	color: #13386d;
+	font-weight: bold;
+	text-align: center; 
+	vertical-align:middle;
+	border:0px solid #C0C0C0 !important;
+ }
+.cls-data-td-list,.cls-data-td-editlist{
+	border: 0px solid #C0C0C0 !important;
+	border-bottom:1px dotted #999 !important;
+	height: 30px !important;
+	color: #666;
+}
+.cls-data-table{
+	border: 0px solid #C0C0C0 !important;
+}
+/*查询栏样式*/
+.cls-search-table{
+	width:700px !important;
+	height:52px !important;
+	background-image: url(../../skin/blue/images/search_bg.jpg) !important;
+	background-repeat: no-repeat !important;
+	margin-bottom: 15px;
+}
+.cls-button{
+	background:url(../../skin/blue/images/btn_normal.gif) !important;
+	height:24px !important;
+	width: 85px !important;
+	line-height:22px !important;
+	font-size:12px !important;
+	color:#13386d !important;
+	margin-left:5px;
+	margin-bottom: 3px;
+	padding-left:8px !important;
+	padding-right:8px !important;
+	border:1px solid #c4d2da !important;
+}
+.cls-button-mouseover{
+	background:url(../../skin/blue/images/btn_hover.gif)  !important;
+	height:24px !important;
+	width: 85px !important;
+	line-height:22px !important;
+	font-size:12px !important;
+	color:#13386d !important;
+	margin-left:5px;
+	margin-bottom: 3px;
+	padding-left:8px !important;
+	padding-right:8px !important;
+	border:1px solid #0f73ac !important;
+}
+
+/*SDCMW*/
+.nonborderbottom{
+	border-bottom:0px;
+}
+.nonbordertop{
+	border-top:0px;
+}
+.label{
+	display:inline-block; width:90px; text-align: right; color:#55BEF8;
+}
+.label2{
+	display:inline-block; width: 80px; text-align: center; border: 1px solid rgb(211,209,209);
+}
+.uploaderbtn{/*uploader*/
+	width: 200px;
+	margin-left: 5px;
+	margin-top:5px;
+}
+/*wbcs system*/
+.hidden{
+	display: none;
+}

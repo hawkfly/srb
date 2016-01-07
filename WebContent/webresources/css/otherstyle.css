@@ -1,0 +1,374 @@
+body{
+	background-color: #fff !important;
+	font-family: "Microsoft YaHei" !important;
+}
+.ztree {
+    background-color: #aed5f4 !important;
+}
+ #accordion1{
+ 	 height: 555px !important;
+	 overflow: hidden !important;
+	 background-color: #aed5f4 !important;
+}
+
+#WX_CONTENT_leftree_guid_treemenusRpt #treeDemo #treeDemo_1_a{
+	margin-top: -5px;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt #treeDemo > li >a{
+	color: #fcfefb;
+    height: 40px !important;
+	width: 200px !important;
+    background-color:#309fe9;
+	line-height:42px !important;
+	margin-left: -11px !important; 
+    border-top: 1px solid #5ab7f5 !important;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt #treeDemo > li >a span{
+	line-height:42px !important;
+	font-size: 15px !important;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt #treeDemo > li >a >span{
+	background-image: none !important;
+}
+
+
+
+
+#WX_CONTENT_leftree_guid_treemenusRpt .ztree li a.curSelectedNode {
+    background-color: #35d492 !important;
+    color: #fff !important;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt .ztree li a.curSelectedNode {
+    /* margin-left: -25px !important; */
+    height: 37px !importamt;
+    width: 250px !important;
+}
+/* #WX_CONTENT_leftree_guid_treemenusRpt .ztree li a {
+    margin-left: -23px;
+} */
+
+.cls-search-table {
+    color:#666;
+	height:50px !important;
+    margin-bottom: 10px !important;
+    background-image: none !important;
+	background-color:#fbfcff !important;
+}
+.cls-data-table{
+	color:#666666 !important;
+}
+.cls-inputbox-normal{
+	color:#666666 !important;
+}
+
+.l-layout-left, .l-layout-right, .l-layout-center, .l-layout-top, .l-layout-bottom {
+    background: none;
+    background-color: #fff;
+}
+.cls-button2 {
+  	margin-left: 5px;
+}
+.cls-button{
+    margin-left: 5px;
+}
+.cls-data-th-list {
+    background-image: none;
+    height: 35px !important;
+    background-color: #f6f6f6;
+}
+.cls-data-td-editlist {
+    height: 28px !important;
+    min-height: 28px !important; 
+}
+ .l-tab-links {
+    background:none;
+	height: 41px !important;
+    background-color:#b8dcf9 !important;
+}
+ .l-tab-links  ul{
+ 	top:4px;
+ 	height: 37px !important;
+ }
+.l-tab-links li {
+    background: none;
+    height: 32px !important;
+    margin-top: 6px !important;
+    margin-left: 6px !important;
+    border-radius: 3px 3px 0px 0px;
+    background-color: #e5eefd !important;
+}
+.l-tab-links li a{
+	top:2px;
+	left:14%;
+	color:#0d568d;
+	font-size: 14px;
+	position: relative;
+}
+.l-tab-links li.l-selected {
+     background: none;
+     border-radius: 3px 3px 0px 0px;
+     background-color: #fff !important;
+}
+.l-tab-links-item-right {
+     display: none;
+} 
+.l-tab-links-item-left {
+     display: none;
+}
+.l-layout-collapse-left{
+	 left:0px !important;
+	 width: 28px !important;
+	 border:none !important;
+	 background-color: #B8DCF9  !important;
+}
+.l-layout-header-inner div{
+	color:#fff;
+	font-size: 16px;
+	text-indent: 15px;
+	text-align: left !important;
+	font-weight: lighter !important;
+}
+.l-layout-header {
+	background: none;
+	height: 41px !important;
+	line-height: 41px !important;
+	background-color:#309fe9 !important;
+}
+.l-layout-left, .l-layout-right, .l-layout-center, .l-layout-top, .l-layout-bottom {
+    border: none !important;
+}
+
+
+
+
+.l-layout-left{
+	top: 74px !important;
+	border: none !important;
+}
+
+
+.l-layout-top{
+	height: 74px !important;
+	border: none !important;
+}
+.l-topmenu{
+	height: 74px !important;
+	border: none !important;
+}
+.l-layout-content{
+	/* height: 530px !important; */	
+	
+}
+
+.l-layout-center{
+	top:74px !important; 
+}
+
+
+
+.l-topmenu {
+    border-top: none !important;
+}
+.ztree li a:hover {
+    text-decoration: none !important;
+}
+
+/* #WX_CONTENT_leftree_guid_treemenusRpt #treeDemo_4 .ico_close{
+	background-image: none !important;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt #treeDemo_4 .ico_open{
+	background-image: none !important;
+}
+
+#WX_CONTENT_leftree_guid_treemenusRpt #treeDemo_1_ico{
+	background-image: none !important;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt #treeDemo_28_ico{
+	background-image: none !important;
+} */
+/* #WX_CONTENT_leftree_guid_treemenusRpt .ico_docu{
+	background-image: url("../images/new/blank.png") !important;
+	background-position: 7px 7px !important;
+	margin-left: -0px !important;
+} */
+
+#WX_CONTENT_leftree_guid_treemenusRpt .level1{
+	color:#1d608d !important;
+	font-size: 14px !important;
+	text-indent: 25px !important;
+	margin-left: -25px !important;
+
+}
+#WX_CONTENT_leftree_guid_treemenusRpt .level1 span{
+	line-height: 30px !important;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt .level2{
+	color:#1d608d !important;
+	text-indent: 14px !important;
+	margin-left: 10px !important;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt .level2 span{
+	font-size: 14px !important;
+}
+
+#WX_CONTENT_leftree_guid_treemenusRpt .switch, .center_docu{
+	display: none ;
+}
+#WX_CONTENT_leftree_guid_treemenusRpt .ztree li ul.line {
+    background: none !important;
+}
+/*#WX_CONTENT_leftree_guid_treemenusRpt .level2 .curSelectedNode{
+	text-indent: 49px !important;
+} */
+.cls-search-label{
+	font-size: 14px;
+}
+.cls-inputbox-normal {
+    height: 25px;
+    font-size: 14px;
+    border-radius: 3px;
+    border: 1px solid #C7C7C7;
+}
+.cls-inputbox-mouseover{
+	height: 25px;
+    border-radius: 3px;
+}
+.cls-inputbox-focus{
+	height: 25px;
+    border-radius: 3px;
+}
+.cls-button{
+    width: 70px;
+    color: #fff;
+    height: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius:3px;
+    text-align: center;
+    background-image: none;
+    background-color:#5faee3;
+    font-family: "Microsoft YaHei";
+}
+.cls-button2 {
+    width: 90px;
+    color: #fff;
+    height: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius:3px;
+    text-align: center;
+    background-image: none;
+    background-color:#36d493;
+    font-family: "Microsoft YaHei";
+}
+.cls-button-mouseover{
+    width: 70px;
+    color: #fff;
+    height: 30px;
+	margin-left:5px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius:3px;
+    text-align: center;
+    background-image: none;
+    background-color:#5faee3;
+    font-family: "Microsoft YaHei";
+    font-weight:bold;
+}
+.cls-button2-mouseover {
+    width: 90px;
+    color: #fff;
+    height: 30px;
+	margin-left:5px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius:3px;
+    text-align: center;
+    background-image: none;
+    background-color:#36d493;
+    font-family: "Microsoft YaHei";
+    font-weight:bold;
+}
+
+.bottom{
+	width: 100%;
+	height: 20px;
+	border:1px solid red;
+}
+#loginPageClt_guid_loginRpt_condition_txtusername,#loginPageClt_guid_loginRpt_condition_txtpassword{
+	margin-top: 0px !important;
+}
+#authorityCRUD #treeDemo_1_a{
+	
+}
+#selectAuthes2RolePage_guid_rolelstRpt_data{
+	border:1px solid #c7c7c7 !important;
+}
+#selectAuthes2RolePage_guid_rolelstRpt{
+	margin-left: 20px !important;
+	margin-top: 10px !important;
+}
+#roles2userPage_guid_roles2userRpt_data{
+	border:1px solid #c7c7c7 !important;
+	margin-top: 10px !important;
+	margin-left: 5px !important;
+}
+#roles2userPage_guid_roleSelectRpt_data{
+	border:1px solid #c7c7c7 !important;
+	margin-top: 10px !important;
+	margin-left: 5px !important;
+}
+
+
+#authoritymngDiv #scr {
+	height: 433px !important;
+}
+.cls-data-td-editdetail{
+	height: 30px !important;
+}
+#enterpriseAuditDetailPage_guid_showListRpt_data{
+	margin-top: 10px;
+}
+#WX_CONTENT_enterpriseAuditDetailPage_guid_showHistRpt table{
+	margin-top: 10px;
+}
+#enterpriseAuditDetailPage_guid_enterpriseAuditDetailSecRpt{
+	margin-top: 6px;
+}
+#groupCmyDetailPage_guid_groupCmyDetailRpt_data{
+	overflow: scroll;
+}
+.spanOutputTextTypePrompt{
+	text-align: center;
+	height: 58px !important;
+	border: 1px solid #c7c7c7 !important;
+	
+}
+.spanOutputTextTypePrompt div >span{
+	color:#333 !important;
+	height: 30px !important;
+	line-height: 30px !important;
+	background-color: #fff !important;
+}
+.spanOutputTextTypePrompt div span >span{
+	border-bottom:1px solid #c7c7c7 !important;
+}
+
+.l-tab-content{
+	position: relative;
+	left: 0%;
+}
+/* #groupInvoicePage_guid_groupInvoiceRpt .cls-search-table{
+	position: fixed;
+	z-index: 999;
+}
+#groupInvoicePage_guid_groupInvoiceRpt .cls-data-table{
+	position: relative;
+	top:65px;
+} */
+.cls-inputbox-normal{
+	font-size: 13px !important;
+}
+.cls-inputbox-datepicker{
+	width:144px !important;
+}

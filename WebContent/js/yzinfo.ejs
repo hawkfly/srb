@@ -1,0 +1,136 @@
+<style  type="text/css">
+    .bt{
+        float:left;
+        width:50%;
+        text-align:right;
+    }
+    .xg{
+        font-size: 13px;
+    }
+    .nr{
+        float:right;
+        text-align:left;
+        width:50%;
+    }
+
+    #wrapper .info {
+        font-size: 13px;
+        line-height: 24px;
+        margin-top: 15px;
+        text-shadow: 1px 1px 0 #FFFFFF;
+    }
+    .btn-xyellow{
+        border: 1px solid #EE860A;
+        border-radius: 3px;
+        box-shadow: 0 1px 2px #AAAAAA;
+        color: #A13F03;
+        font-weight: bold;
+        line-height: 30px;
+        height: 30px;
+        text-align: center;
+        min-width:100px;
+        margin: 0 10px;
+    }
+
+</style>
+
+<div class="wrap">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <ul class="info">
+                    <li><span class="bt">户主姓名：</span><span class="nr"><%= name %></span></li>
+                    <li><span class="bt">楼号：</span><span class="nr"><%= louhao %></span></li>
+                    <li><span class="bt">单元：</span><span class="nr"><%= danyan%></span></li>
+                    <li><span class="bt">房号：</span><span class="nr"><%= fanghao%></span></li>
+                    <li><span class="bt">电话：</span><span class="nr"><%= phone %></span></li>
+                </ul>
+            </td>
+            <td>
+                <ul class="info">
+                    <li><span class="bt">交房时间：</span><span class="nr"><%= jiaofang%></span></li>
+                    <li><span class="bt">面积：</span><span class="nr"><%= mianji%></span></li>
+                    <li><span class="bt">水号：</span><span class="nr"><%= water_code%></span></li>
+                    <li><span class="bt">车位号：</span><span class="nr"><%= cheweihao%></span></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <div class="an" style="width:100%;height:50px;align:right">
+        <div style="clear: both;padding-top: 5%;float:right;width:20%">
+            <a class="btn-yellow" style="width: 90%;" href="javascript:xgmm()">修改密码</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function xgmm(){
+        $('#wrapper .wrap').empty();
+        var div = $('#wrapper .wrap');
+        var html = '<div style="margin-left: 15%;">'+
+                '<table border="0" cellpadding="0" cellspacing="0">'+
+                '<tr>'+
+                '<td class="xg">原密码：</td>'+
+                '<td><input name="username" id="oldpass" class="inptext" type="text"/>'+
+                '</td>'+
+                '</tr>'+
+                '<tr>'+
+                '<td class="xg" height="50">新密码：</td>'+
+                '<td><input name="password" id="password" class="inptext" type="password" />'+
+                '</td>'+
+                '</tr>'+
+                '<tr>'+
+                '<td class="xg">确认密码：</td>'+
+                '<td><input name="password" id="rpassword" class="inptext" type="password"/>'+
+                '</td>'+
+                '</tr>'+
+
+                '<tr>'+
+                '<td rowspan="3" colspan="2" height="100px">'+
+                '<input type="button" class="btn-xyellow" onclick="javascript:xgSjMm();" value="确认修改"/>'+
+                '<input type="button" class="btn-xyellow" onclick="javascript:reb();" value="返回"/>'+
+                '</td>'+
+                '</tr>'+
+                '</table>'+
+                '</div>';
+
+        div.append(html);
+    }
+
+    function reb(){
+        window.location.reload();
+    }
+
+    function xgSjMm(){
+        var op = $('#oldpass').val();
+        var np = $('#password').val();
+        var cp = $('#rpassword').val();
+        if(op==np){
+            alert("您没有做任何修改");
+            return;
+        }
+        if(np!=cp){
+            alert("两次输入的密码不一致");
+            return;
+        }
+        var url = "xgmm.do?username=${user.username}&password="+op+"&rpassword="+np+"&type=ph";
+        $.ajax({
+            url:url,
+            type:"post",
+            dataType:"json",
+            success:function(data){
+                if(data.res=="error"){
+                    alert("密码错误");
+                }else if(data.res=="success"){
+                    alert("成功");
+                    window.location.reload();
+                }
+            },
+            error:function(){
+                alert("失败");
+            }
+        });
+
+    }
+</script>

@@ -1,0 +1,76 @@
+#left{
+	width:50%;
+	height:180px;
+	position:relative;  
+    float:left;	
+}
+#right{
+	width:50%;
+	height:180px;
+	position:relative;  
+    float:left;	
+}
+#down{
+	width:100%;
+	height:180px;
+	position:fixed;
+	bottom:0;
+
+}
+#dygs{
+
+	width:330px;
+	float:right;
+	height:165px;
+	margin-top:5px;
+	margin-right:15px;
+	border: 1px solid #CBCBCB;
+	display:inline;  
+}
+#tcgs{
+
+	width:330px;
+	float:left;
+	height:165px;
+	margin-top:5px;
+	margin-left:15px;
+	border: 1px solid #CBCBCB;
+	display:inline;  
+}
+#tcgs span{
+    font-size: 12px;
+    height: auto;
+    transition: color 0.2s linear 0s;
+    white-space: normal;
+    }
+#dygs span{
+    font-size: 12px;
+    height: auto;
+    transition: color 0.2s linear 0s;
+    white-space: normal;
+    }
+#leftUp{
+	width:200px;
+	height:120px;
+	margin-left:60px;
+	margin-top:5px;
+	}
+#rightUp{
+	width:200px;
+	height:120px;
+	margin-left:60px;
+	margin-top:5px;
+	}
+#temp{
+	width:329px;
+	height:30px;
+}
+#non{
+	height:30px;
+	width:60px;
+	float:left;
+	}
+#upBtn{
+	float:left;
+	margin-top:2px;
+}

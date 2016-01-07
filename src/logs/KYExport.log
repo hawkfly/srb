@@ -1,0 +1,32 @@
+05:58:25:014 03604  connect server, address:127.0.0.1, port:7712.
+05:58:25:029 03604  _CfsChannel::Send connecting or disconnecting
+05:58:26:231 03604  socket occur any error,event:0, error:10061, state:1.
+05:58:26:231 03604  connect server failed.
+05:58:26:231 03604  CfsChannel::Disconnect...............0
+05:58:26:231 03604  CfsChannel::Disconnect...............1
+05:58:26:231 03604  CfsChannel::Disconnect...............2
+05:58:26:231 03604  CfsChannel::Disconnect...............3
+05:58:26:231 03604  CfsChannel::Disconnect...............4
+05:58:26:434 03604  CfsChannel::CheckTimeOut state:0
+05:58:26:434 03604  CfsChannel::Disconnect...............0
+05:58:26:434 03604  connect server, address:127.0.0.1, port:7712.
+05:58:27:448 03604  socket occur any error,event:0, error:10061, state:1.
+05:58:27:448 03604  connect server failed.
+05:58:27:448 03604  CfsChannel::Disconnect...............0
+05:58:27:448 03604  CfsChannel::Disconnect...............1
+05:58:27:448 03604  CfsChannel::Disconnect...............2
+05:58:27:448 03604  CfsChannel::Disconnect...............3
+05:58:27:448 03604  CfsChannel::Disconnect...............4
+05:58:27:651 03604  CfsChannel::CheckTimeOut state:0
+05:58:27:651 03604  CfsChannel::Disconnect...............0
+05:58:27:651 03604  connect server, address:127.0.0.1, port:7712.
+05:58:28:868 03604  socket occur any error,event:0, error:10061, state:1.
+05:58:28:868 03604  connect server failed.
+05:58:28:868 03604  CfsChannel::Disconnect...............0
+05:58:28:868 03604  CfsChannel::Disconnect...............1
+05:58:28:868 03604  CfsChannel::ReleaseSendPackets,error:2
+05:58:28:868 03604  CfsChannel::Disconnect...............2
+05:58:28:868 03604  CfsChannel::Disconnect...............3
+05:58:28:868 03604  CfsChannel::Disconnect...............4
+05:58:29:071 03604  CfsChannel::CheckTimeOut state:0
+05:58:29:071 03604  CfsChannel::Disconnect...............0

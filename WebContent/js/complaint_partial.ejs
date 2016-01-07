@@ -1,0 +1,13 @@
+
+<div style="margin:10px">
+    <marquee direction="up" onMouseOut="this.start()" onMouseOver="this.stop()" scrollamount="3" height="320">
+        <ul class="q">
+        <% for(var i=0; i< replies.length; i++){ %>
+            <li>
+                <div><a class="cplink" data-cid="<%= replies[i].id %>" href="javascript:;"><%= replies[i].title %></a></div>
+            </li>
+        <% } %>
+        </ul>
+    </marquee>
+</div>
+

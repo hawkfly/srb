@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="problem">
+    <typeAlias alias="pr" type="com.pansoft.entity.Problem" />
+    <select id="problemList" resultClass="pr">
+    select * from t_problem_info where pid=0 and ext2=0 order by record_date desc
+    </select>
+
+    <select id="problemListByYz" resultClass="pr">
+        select * from t_problem_info where pid=0 and yz_id=#yz_id# order by record_date desc
+    </select>
+
+    <insert id="insertProblem" parameterClass="pr">
+    INSERT INTO T_problem_INFO(ID,YZ_ID,TITLE,CONTENT,RECORD_DATE,RE_CONTENT,RE_DATE,PID,REMARK,EXT1,EXT2) VALUES (seq_sqwy.nextval,#yz_id#,#title#,#content#,#record_date#,#re_content#,#re_date#,#pid#,#remark#,#ext1#,#ext2#)
+    </insert>
+
+    <select id="problemOne" resultClass="pr">
+    select * from t_problem_info where id=#id#
+    </select>
+
+    <select id="problemReplies" resultClass="pr" parameterClass="string">
+    select * from t_problem_info where pid=#pid# order by record_date asc
+    </select>
+
+    <select id="existNewProblem" resultClass="Integer">
+        <![CDATA[
+        select count(*) from t_problem_info where ext2 = 0 and pid=0
+        ]]>
+    </select>
+
+    <parameterMap  class="java.util.HashMap" id="pr2">
+        <parameter property="ext2"/>
+        <parameter property="id"/>
+    </parameterMap>
+
+    <update id="updateProblemStatus" parameterMap="pr2">
+        update t_problem_info set ext2 = ? where id = ?
+    </update>
+</sqlMap>

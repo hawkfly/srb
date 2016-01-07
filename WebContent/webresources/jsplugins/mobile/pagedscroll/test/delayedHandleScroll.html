@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>Simulate delay when callback returned,like it can be when asynchronous ajax request called from
+        callback</title>
+    <link rel="stylesheet" href="../libs/scrolltotop/style.css">
+    <script type="text/javascript" src="../libs/jquery/jquery.js"></script>
+    <script type="text/javascript" src="../src/jquery-paged-scroll.js"></script>
+    <script type="text/javascript" src="../libs/scrolltotop/jquery.scrollToTop.min.js"></script>
+</head>
+<body>
+<h1>Scroll to  the bottom to see pages are loaded</h1>
+<div id="largeData"></div>
+<a href="#top" id="toTop" class="BOTTOM_TOOLBAR"></a>
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        for (var i = 0; i < 50; i++) {
+            $('#largeData').append("<div>Test</div><br>");
+        }
+        $("#toTop").scrollToTop();
+    });
+
+    $(window).paged_scroll({
+        handleScroll:function (page,container,doneCallback) {
+            setTimeout(function () {
+                console.log("Page is:", page);
+                $('#largeData').append("Appending data for page:" + page + "<div>DATA DATA DATA</div><br><div>DATA</div><br><div>DATA</div><br><div>DATA DATA DATA</div><br><div>DATA</div><br><div>DATA</div><br>");
+//                doneCallback();
+            }, 5000);
+
+            return true;
+        },
+        // Uncomment to enable infinite scroll
+        //pagesToScroll : 5,
+        triggerFromBottom:'5%',
+        loader:'<div class="loader"></div>',
+        pagesToScroll:120,
+        targetElement:$('#largeData'),
+        debug:true
+
+    });
+
+</script>
+</body>
+</html>

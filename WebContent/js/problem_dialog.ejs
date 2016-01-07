@@ -1,0 +1,30 @@
+<div>
+    <div style="float: right;font-size: 15px;font-weight:bold"><%= re_date %></div>
+    <div  style="border: 1px dashed #99d1e8;width: 300px;background-color: #ecf2fb;padding: 10px;font-size: 15px;border-radius:4px; margin-bottom: 20px;color:#0d6bb5;">
+        <div><b><%= title %></b></div>
+        <%= content %>
+    </div>
+    <ul>
+        <% for(var i=0; i<replies.length; i++) { %>
+        <li>
+            <% if(replies[i].ext1=='0') { %>
+            <div style="border: 1px dashed #99d1e8;width: 300px;float: left; background-color: #ecf2fb;padding: 10px;font-size: 15px;border-radius:4px;margin-bottom: 20px; color:#0d6bb5;">
+                <%= replies[i].content %>
+            </div>
+            <% } %>
+            <% if(replies[i].ext1=='1') { %>
+            <div style="border: 1px dashed #999999;width: 300px;float: right;background-color: #ececec;padding: 10px;font-size: 15px;border-radius:4px; margin-bottom: 20px;">
+                <%= replies[i].content %>
+            </div>
+            <% } %>
+        </li>
+        <% } %>
+    </ul>
+    <form style="margin-top: 30px" action="/community/replyProblem.do" id="cpform" target="ifm_blank">
+        <input type="hidden" name="pid" value="<%= id %>">
+        <textarea rows="5" id="cpcontent" name="content" style="overflow:hidden;width:100%;border: 1px solid #b7b7b8; margin-bottom:10px;"></textarea>
+        <input id="cpsubmit" type="submit" class="form_button" value="回复" />
+        <input id="cpclose" type="button" class="form_button" style="margin-left:20px;margin-right:20px;" value="关闭" />
+
+    </form>
+</div>
