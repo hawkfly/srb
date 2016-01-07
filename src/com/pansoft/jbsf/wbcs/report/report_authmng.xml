@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	<!-- 权限管理 -->
+	<page id="authoritymngPage" css="/webresources/css/jbsf/wbcsprjcore.css,/webresources/css/ztree/zTreeStyle/zTreeStyle.css,/webresources/css/skins/Aqua/css/ligerui-all.css" 
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/ztree/jquery.ztree.core-3.5.min.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/ztree/jquery.ztree.excheck-3.5.min.js,/webresources/jsplugins/ztree/jquery.ztree.exedit-3.5.min.js" 
+		  interceptor="com.wbcs.jbsf.auth.interceptor.ItprSessionRole">
+		<report id="authTreeRpt" type="editablelist" pagesize="-1" interceptor="com.wbcs.jbsf.auth.interceptor.ItprTree" template="/webresources/pages/auth/sysauthoritiestree.jsp">
+			<display labeltdwidth="20%" valuetdwidth="80%" labelbgcolor="#f0f0f0" labelalign="right" valuealign="left" >
+				<col column="id"></col>
+				<col column="code"></col>
+				<col column="pid" property="pId"></col>
+				<col column="name"></col>
+				<col column="url"></col>
+			</display>
+			<sql type="statement">
+				<select>
+					<value>
+						<!-- 所有角色的分支树-->
+						<![CDATA[
+							select distinct id, code, pid, name, url
+							from jbsf_authorize
+							where id in (
+								select distinct authid from  jbsf_roles_authes ra where 1=0 or {#condition#}
+							)
+						]]>
+					</value>
+					<condition name="txtroleids" source="request{adminroles}" keepkeywords="true">
+						<value>
+							<![CDATA[roleid in(#data#)]]>
+						</value>
+					</condition>
+				</select>
+			</sql>
+			<buttons>
+				<button name="addauthorityBtn" class="com.wbcs.system.buttons.ServerSQLActionButton" refreshpage="false"
+					    failedprompt="节点添加失败" autoreportdata="false">
+						<params>
+							<param name="uuid" value="uuid{}"/>
+							<param name="userid" value="session{userid}"/>
+						</params>
+						<![CDATA[
+						update jbsf_authorize(@{code}) where 1=0;
+						]]>
+				</button>
+				<button name="delauthoritiesBtn" class="com.wbcs.system.buttons.ServerSQLActionButton" refreshpage="false"
+						failedprompt="节点删除失败" autoreportdata="false">
+					<value>
+						<![CDATA[
+							DELETE FROM jbsf_authorize WHERE id = @{id};
+							DELETE FROM jbsf_roles_authes WHERE authid = @{id};
+						]]>
+					</value>		
+				</button>
+			</buttons>
+		</report>
+	</page>
+	<!-- 权限编辑 -->
+	<page id="authoritydetailPage" css="/webresources/css/jbsf/wbcsprjcore.css">
+		<report id="editReport" title="&amp;nbsp;" type="editabledetail" width="350">
+				<display labeltdwidth="40%">
+					<col column="ja.id" displaytype="hidden"></col>
+					<col column="ja.code" label="资源编号" br="true"></col>
+					<col column="ja.pid" label="上级资源" br="true" defaultvalue="-1">
+						<inputbox type="selectbox" defaultvalue="-1">
+							<option source="@{select id, name from jbsf_authorize where 1=0 or {#condition#}}" value="id" label="name">
+								<condition name="txtpcode">
+									<value><![CDATA[id='#data#']]></value>
+								</condition>
+							</option>
+						</inputbox>
+					</col>
+					<col column="ja.pname" displaytype="hidden"></col>
+					<col column="ja.name" label="资源名称" clickorderby="true" br="true"></col>
+					<col column="ja.description" label="资源描述" br="true"></col>
+					<col column="ja.type" label="资源类别" br="true">
+						<inputbox type="selectbox" defaultvalue="page">
+							<option value="page" label="page"></option>
+							<option value="concept" label="concept"></option>
+							<option value="button" label="button"></option>
+						</inputbox>
+					</col>
+					<col column="ja.accessmodel" label="访问模式" br="true"></col>
+					<col column="ja.ismenu" label="是否菜单" br="true">
+						<inputbox type="checkbox" defaultvalue="0">
+							<option value="1" label="是否菜单"></option>
+						</inputbox>
+					</col>
+					<!-- <col column="ja.accesstype" label="访问权限" br="true"></col>
+					<col column="ja.display" label="是否显示" br="true"></col>
+					<col column="ja.locationame" label="资源位置" br="true"></col> -->
+					<col column="ja.url" label="地址" br="true"></col>
+					<col column="ja.target" label="锚点" br="true"></col>
+					<col column="ja.ordernum" label="排序号" br="true"></col>
+					<col column="ja.icon1" label="图标1" br="true"></col>
+					<!-- <col column="ja.icon2" label="图标2" br="true"></col>
+					<col column="ja.icon3" label="图标3" br="true"></col> -->
+					<!-- <col column="jpm.menucode" label="菜单权限">
+						<inputbox type="popupbox" width="600" height="400" sourcebox="textareabox">
+							<![CDATA[/jbsf.sr?PAGEID=menusPopupPage&rolecode=url{rolecode}&menucode=@{menucode}&txtcode=@{code}]]>
+						</inputbox>
+					</col> -->
+				</display>
+				<sql>
+					<select>
+						<value id="ja">
+							<![CDATA[
+								SELECT a.id, a.code, a.pid, p.name pname, a.name, a.description, a.type, a.ismenu, a.url, a.target,
+									   a.ordernum, a.icon1, a.icon2, a.icon3, a.accessmodel
+								FROM jbsf_authorize a, jbsf_authorize p WHERE a.pid=p.id and(1=0 or {#condition#}) order by a.name
+							]]>
+						</value>
+						<condition name="txtcode" belongto="ja" hidden="true">
+							<value>
+								<![CDATA[a.id = '#data#']]>
+							</value>
+						</condition>
+					</select>
+					<update>
+						<params>
+							<param name="rolecode" value="url{rolecode}"/>
+							<param name="pagecode" value="@{code}"/>
+						</params>
+						<value>
+							<![CDATA[
+								UPDATE jbsf_authorize(@{pid},@{code},@{name},@{description},@{type},@{url},@{ordernum},@{ismenu}) where id = @{id};
+							]]>
+						</value>
+					</update>
+				</sql>
+				<format>
+					<imports>
+	  	 		   		<import>com.wbcs.util.*</import>
+	  	 		   		<import>com.wbcs.jbsf.util</import>
+	  	 	 	 	</imports>
+					<value>
+						<![CDATA[
+							if(!"page".equals(type)){
+								//rrequest.authorize("editReport",Consts.DATA_PART,"menucode","display","false");
+							}
+							String accessmode=rrequest.getCurrentAccessMode(rbean.getId()); 
+							if("read".equals(accessmodel)||"readonly".equals(accessmodel)){
+								if(com.wbcs.jbsf.util.Consts.DB_YES.equals(ismenu))ismenu = "是";
+								else ismenu = "否";
+								
+								//pcode = pname;
+							}
+						]]>
+					</value>
+				</format>
+			</report>
+	</page>
+	<!-- 角色维护与赋权-->
+	<page id="selectAuthes2RolePage" css="/webresources/css/jbsf/wbcsprjcore2.css,/webresources/css/ztree/zTreeStyle/zTreeStyle.css,/webresources/css/skins/Aqua/css/ligerui-all.css" 
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/ztree/jquery.ztree.core-3.5.min.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/ztree/jquery.ztree.excheck-3.5.min.js,/webresources/script/validate.js,/webresources/jsplugins/jbsf/bussiness/authTreeRpt.js,/js/iv/set.js,/js/iv/change.js"
+		  interceptor="com.wbcs.jbsf.auth.interceptor.ItprSessionRole">
+		<hpanel id="hpanel" margin_right="10px;">
+			<report id="rolelstRpt" type="editablelist2" width="700px" pagesize="-1" interceptor="com.pansoft.jbsf.wbcs.interceptor.ItprModifyRoleId">
+				<display>
+					<col column="r.id" label="角色编码" displaytype="hidden"></col>
+					<col column="r.pid" displaytype="hidden"></col>
+					<col column="r.name" label="角色名称"></col>
+					<col column="r.description" label="功能描述"></col>
+					<col column="r.isadmin" label="是否管理员">
+						<inputbox type="radiobox">
+							<option value="1" label="是"></option>
+							<option value="0" label="否"></option>
+						</inputbox>
+					</col>
+					<col column="rra.authid" displaytype="hidden"></col>
+				</display>
+				<sql>
+					<select>
+						<value id="r">
+							<![CDATA[
+								SELECT id,rolename as name,description,pid,isadmin FROM jbsf_roles WHERE isghost <> 1 and pid like '#txtuserid#%' and {#condition#} order by id
+							]]>
+						</value>
+						<value id="rra" seperator="," dependstype="multiple" depends="roleid='r.id'">
+							<![CDATA[SELECT * FROM jbsf_roles_authes where {#dependscondition#};]]>
+						</value>
+						<condition name="txtuserid" belongto="r" source="session{userid}"></condition>
+						<condition name="txtname" belongto="r" label="角色名称：" labelstyle="2">
+							<value>
+								<![CDATA[rolename like '%#data#%']]>
+							</value>
+							<inputbox type="textbox" styleproperty="style='width:100px;' onchange='searchRole(this)'"></inputbox>
+						</condition>
+					</select>
+					<insert>
+						<params>
+							<param name="crid" value="session{userid}"/>
+							<param name="crname" value="session{usercode}"/>
+						</params>
+						<value>
+							<![CDATA[
+								INSERT INTO jbsf_roles(@{id},rolename=@{name}, @{description}, @{pid}, isghost='0',@{isadmin});
+								UPDATE jbsf_roles_authes(@{authid}) where 1=0;
+							]]>
+						</value>
+					</insert>
+					<update>
+						<value>
+							<![CDATA[
+								UPDATE jbsf_roles(rolename=@{name}, @{description}, @{isadmin}) where id=@{id};
+								UPDATE jbsf_roles_authes(@{authid}) where 1=0;
+							]]>
+						</value>
+					</update>
+					<delete>
+						<value>
+							<![CDATA[
+								DELETE FROM jbsf_roles_authes WHERE roleid=@{id};
+								DELETE FROM jbsf_user_roles WHERE roleid=@{id};
+								DELETE FROM jbsf_roles WHERE id=@{id};
+							]]>
+						</value>
+					</delete>
+				</sql>
+				<buttons>
+					<button name="saveBtn" label="保存" position="searchbox" extends="${save.button.default}"></button>
+					<button name="addBtn" label="添加" position="searchbox" extends="${add.button.default}"></button>
+					<button name="deleteBtn" label="删除" position="searchbox" extends="${delete.button.default}"></button>
+				</buttons>
+				<format>
+					<value>
+						<![CDATA[
+							String accessmode=rrequest.getCurrentAccessMode(rbean.getId());
+							if(accessmode.equals("read")||accessmode.equals("readonly")||accessmode.equals("")){
+								if(com.wbcs.jbsf.util.Consts.DB_YES.equals(isadmin))isadmin = "是";
+								else isadmin = "否";
+							}
+						]]>
+					</value>
+				</format>
+			</report>
+			<report id="authSelectRpt" type="editablelist" width="350px" pagesize="-1" title="角色所辖权限" onload="init"
+					template="/webresources/pages/auth/selectauthes2role.jsp" interceptor="com.wbcs.jbsf.auth.interceptor.ItprTree" depends="rolelstRpt" dependsparams="roleid=@{id};rolename=@{name}">
+				<display>
+					<col column="id"></col>
+					<col column="code"></col>
+					<col column="pid" property="pId"></col>
+					<col column="name"></col>
+					<col column="url"></col>
+					<col column="checked" datatype="boolean"></col>
+					<col column="accesstype" defaultvalue="write"></col>
+				</display>
+				<sql type="statement">
+					<select>
+						<value>
+							<![CDATA[
+							select * from (
+								select distinct  a.id, a.code, a.pid, a.name, a.url, a.type, 0 as checked, 'nonread' as accesstype
+								from jbsf_authorize a where :1 foror[a.pid like '&authid$%']
+								->1 select distinct authid from  jbsf_roles_authes ra where 1=0 or {#condition#}<-
+							) al 
+							where (id, code, pid, name, url, type, checked, accesstype) not in
+							(
+								select distinct a.id, a.code, a.pid, a.name, a.url, a.type, 0 as checked, 'nonread' as accesstype
+								from jbsf_authorize a
+								where a.id in (select authid from jbsf_roles_authes rra where rra.roleid = '#roleid#')
+							)
+							union
+							select distinct a.id, a.code, a.pid, a.name, a.url, a.type, 1 as checked, accesstype
+							from jbsf_authorize a, jbsf_roles_authes rra where a.id = rra.authid and rra.roleid = '#roleid#'
+							]]>
+						</value>
+						<condition name="txtroleids" source="request{adminroles}" keepkeywords="true">
+							<value>
+								<![CDATA[roleid in(#data#)]]>
+							</value>
+						</condition>
+						<condition name="roleid"></condition>
+						<condition name="rolename"></condition>
+					</select>
+				</sql>
+				<buttons>
+					<button name="delOldAuthesRoleBtn" class="com.wbcs.system.buttons.ServerSQLActionButton" refreshpage="true"
+						failedprompt="角色权限关系关联失败" autoreportdata="false">
+						<value>
+							<![CDATA[
+								delete from jbsf_r_rolsauthorize where rolecode=@{roleid};
+							]]>
+						</value>	
+					</button>
+					<button name="saveAuthes2RoleBtn" class="com.wbcs.system.buttons.ServerSQLActionButton" refreshpage="true"
+						failedprompt="角色权限关系关联失败" autoreportdata="false">
+						<value>
+							<![CDATA[
+								insert into jbsf_r_rolsauthorize(rolecode=@{roleid}, authorizecode=@{authid}, accesstype=@{accesstype});
+							]]>
+						</value>	
+					</button>
+					<button name="modifyRoleAuthesBtn" class="com.wbcs.system.buttons.ServerSQLActionButton" autoreportdata="false" failedprompt="角色权限关系关联失败">
+						<params>
+							<param name="type" value="write"/>
+						</params>
+						<value>
+							<![CDATA[
+								update jbsf_roles_authes(accesstype=#{type}) where 1=0;
+							]]>
+						</value>
+					</button>
+					<button name="delRoleAuthesBtn" class="com.wbcs.system.buttons.ServerSQLActionButton" autoreportdata="false" failedprompt="角色权限关系删除失败">
+						<value>
+							<![CDATA[
+								delete from jbsf_r_rolsauthorize where rolecode=@{roleid} and authorizecode=@{authid};
+							]]>
+						</value>
+					</button>
+					<button name="saveCstmBtn" position="title" label="保存" styleproperty="margin-top: 20px;margin-left: 70px;" extends="${wbcs.button.default}">					
+						save(document.getElementById('saveParamRoleid').value);
+					</button>
+					
+				</buttons>
+			</report>
+		</hpanel>
+	</page>
+	<!-- 角色选择帮助 -->
+	<page id="roleselectPage">
+		<report id="roleselectRpt" rowselect="checkbox" pagesize="-1" type="editablelist2" 
+				interceptor="com.hawkfly.interceptor.ItprSdcmSelectRolesFilter" 
+				template="/wbcsdemo/jsp/hawkflyjsp/sysroleselect.jsp">
+			<display>
+				<col column="r.id" label="角色编码" displaytype="hidden"></col>
+				<col column="r.rolename" label="角色名称"></col>
+				<col column="r.description" label="功能描述"></col>
+			</display>
+			<sql>
+				<select>
+					<value id="r">
+						<![CDATA[
+							SELECT id,rolename,description FROM jbsf_roles WHERE isghost <> 1 and id <> 0 and {#condition#}
+						]]>
+					</value>
+					<condition name="txtuserid" belongto="r" source="session{userid}"></condition>
+					<condition name="txtname" belongto="r" label="角色名称：" labelstyle="2">
+						<value>
+							<![CDATA[name like '%#data#%']]>
+						</value>
+					</condition>
+				</select>
+			</sql>
+		</report>
+	</page>
+	<!-- 用户维护及赋权 -->
+	<page id="roles2userPage" css="/webresources/css/jbsf/wbcsprjcore2.css,/webresources/css/ztree/zTreeStyle/zTreeStyle.css,/webresources/css/skins/Aqua/css/ligerui-all.css" 
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/jbsf/selectcallback.js,/webresources/script/validate.js,/js/iv/set.js,/js/iv/change.js,/webresources/jsplugins/jbsf/md5.js,/webresources/jsplugins/defaultplugin/core/base.js,/webresources/jsplugins/jbsf/onload.js,/webresources/jsplugins/ztree/jquery.ztree.core-3.5.min.js,/webresources/jsplugins/jbsf/wbcsbefsave.js">
+		  <jsp id="hiddenStatus">
+			/view/iv/usertxtHiddenVar.jsp
+		  </jsp>
+		  <html id="nativejsDefine">
+		  	<![CDATA[
+		  		<input type='hidden' id='orgname' value=''/>
+		  		<script>
+		  			function onclickTreeNode(val, name){
+		  				setInputboxValueForCondition('roles2userPage','roles2userRpt','tjorg',val);
+		  				$('#orgname').val(name);
+		  				try{searchReportData('roles2userPage','roles2userRpt')}catch(e){logErrorsAsJsFileLoad(e);}
+		  			}
+		  		</script>
+		  	]]>
+		  </html>
+		  <interceptor>
+		  	<imports>
+	  	 		   <import>com.wbcs.util.*</import>
+	  	 	 </imports>
+		  	<preaction>
+		  		rrequest.authorize("roles2userRpt",Consts.BUTTON_PART,"type{save}","display","false");
+		  		rrequest.authorize("roleSelectRpt",Consts.BUTTON_PART,"type{save}","display","false");
+		  	</preaction>
+		  </interceptor>
+		  <hpanel id="hpanel">
+		  	<report id="orgRpt" extends="commonPage.treeRpt"></report>
+		  	<report id="roles2userRpt" type="editablelist2" selectcallback="onselectRow" pagesize="15" rowselect="single">
+				<display>
+					<col column="user.id" displaytype="hidden"></col>
+					<col column="user.username" label="用户名"></col>
+					<col column="user.password" label="密码" defaultvalue="1">
+						<inputbox type="passwordbox" defaultvalue="1"></inputbox>
+					</col>
+					<col column="user.orgid" displaytype="hidden"></col>
+					<col column="user.orgname" displaytype="hidden"></col>
+					<col column="user.realname" label="真实用户">
+						<inputbox type="textbox" jsvalidate="isNotEmpty('姓名不能为空')"></inputbox>
+					</col>
+					<col column="user.email" label="EMAIL"></col>
+					<col column="user.phone" label="电话"></col>
+					<col column="user.islock" label="冻结" defaultvalue="0">
+						<inputbox type="radiobox">
+							<option value="1" label="已冻结"></option>
+							<option value="0" label="活动用户"></option>
+						</inputbox>
+					</col>
+				</display>
+				<sql>
+					<select><!-- 查询isadminuser = 1的用户 -->
+						<value id="user">
+							<![CDATA[
+								select a.id,a.username,a.password,a.orgid,a.orgname,a.realname,a.email,a.islock,a.remark,a.phone from jbsf_user a where a.username like %#cdt#% and  a.id <> #userid# and a.id like '%#userid#%' and {#condition#}
+							]]>
+						</value>
+						<condition name="cdt" label="用户名:" belongto="user" labelstyle="2">
+							<inputbox type="textbox" styleproperty="style='width:100px;' onchange='userMana(this);'"></inputbox>
+						</condition>
+						<condition name="userid" belongto="user" source="session{userid}"></condition>
+						<condition name="tjorg">
+							<inputbox type="textbox" styleproperty="style='display:none;'"></inputbox>
+							<value><![CDATA[orgid like '#data#%']]></value>
+						</condition>
+					</select>
+					<insert>
+						<params>
+							<param name="pid" value="session{userid}"/>
+						</params>
+						<value>
+							<![CDATA[
+								insert into jbsf_user(@{id},@{username},password=!{pwd},orgid=!{orgid},orgname=!{orgname},@{realname},@{email},@{islock},@{phone});
+								insert into jbsf_roles(id,pid,isghost) values(@{id},#{pid},'1');
+							]]>
+						</value>
+					</insert>
+					<update>
+						<value><![CDATA[
+							update jbsf_user(@{password},@{realname},@{email},@{islock},@{phone}) where id=@{id};
+						]]></value>
+					</update>
+					<delete>
+						<value>
+							<![CDATA[
+								delete from jbsf_user where id = @{id};
+								delete from jbsf_user_roles where userid = @{id};
+							]]>
+						</value>
+					</delete>
+				</sql>
+				<buttons>
+					<button name="addBtn" label="添加" position="searchbox" extends="${add.button.default}"></button>
+					<button name="deleteBtn" label="删除" position="searchbox" extends="${delete.button.default}"></button>
+					<button name="saveBtn" label="保存" position="searchbox" extends="${wbcs.button.default}">
+					<![CDATA[
+						var selectRole = getSelectRowCols({'pageid':'roles2userPage', 'reportid':'roleSelectRpt','colnames':['id']});
+						var roles = '';
+						if(selectRole != null){
+							for(var i = 0; i < selectRole.length; i++){
+								if(i==0){
+									roles = selectRole[i]['id'].value;
+								}
+								else{
+									roles = roles + ',' + selectRole[i]['id'].value;
+								}
+							}
+						}
+						var pwds = getSelectRowCols({'pageid':'roles2userPage', 'reportid':'roles2userRpt','colnames':['password']});
+						var pwd = pwds[0]['password'].value;
+						if(pwd.length<30)
+						{
+							pwd = hex_md5(pwd);
+							pwd = pwd.toUpperCase();
+						}
+						var orgname = $('#orgname').val();
+						var orgcdtguid = getCdtGuid('roles2userPage', 'roles2userRpt', 'tjorg');
+						var orgid = $('#'+orgcdtguid).val();
+						actionsRpt({'pageid':'roles2userPage','reportid':'roles2userRpt','serverClassName':'com.pansoft.jbsf.wbcs.action.IVSaveUserAndRole','conditions':{name:'SELECTEDROW', value:true},'paras':{'keys':roles,'pwd':pwd,'orgid':orgid,'orgname':orgname},'aftcallback':function(data){
+						}});
+					]]>
+					</button>
+					<button name="saveAssistBtn" position="other" class="com.wbcs.system.buttons.ServerSQLActionButton" extends="${wbcs.button.default}" autoreportdata="true">
+						<value>
+							<![CDATA[update jbsf_user(@{id}) where 1=0]]>
+						</value>
+					</button>
+				</buttons>
+				<format>
+					<value>
+						<![CDATA[
+							if("1".equals(islock)){
+								islock = "<font color='red'>已冻结</font>";
+							}else{
+								islock = "<font color='green'>活动</font>";
+							}
+						]]>
+					</value>
+				</format>
+			</report>
+			<report id="roleSelectRpt" type="editablelist2" rowselect="checkbox"  pagesize="-1" top="43" right="10">
+				<display>
+					<col column="id" displaytype="hidden"></col>
+					<col column="rolename" label="角色名称"></col>
+					<col column="description" label="角色说明"></col>
+				</display>
+				<sql>
+					<select>
+						<value>
+							<![CDATA[SELECT id, rolename, description from jbsf_roles where isghost='0' and id <>'0']]>
+						</value>
+						
+						<condition name="txtuserid" hidden="true"></condition>
+					</select>
+					<update>
+						<params>
+							<param name="userid" value="url{txtuserid}"/>
+						</params>
+						<value>
+							<![CDATA[
+								UPDATE jbsf_roles(@{description}) where id=@{id};
+								UPDATE jbsf_roles(@{description__old}) where id=@{id};
+								
+								DELETE FROM JBSF_USER_ROLES WHERE userid= #{userid};
+								INSERT INTO JBSF_USER_ROLES(userid=#{userid}, @{id});
+							]]>
+						</value>
+					</update>
+				</sql>
+			</report>
+		  </hpanel>
+	</page>
+	<!-- 方位管理 -->
+	<page id="locationTypePage" css="/webresources/css/jbsf/wbcsprjcore.css">
+		<report id="locationTypeRpt" type="editablelist2" title="&amp;nbsp;">
+			<display>
+				<col column="code" label="方位类别编号"></col>
+				<col column="name" label="方位类别名称"></col>
+				<col column="type" label="封装类型"></col>
+			</display>
+			<sql>
+				<select>
+					<value>
+						<![CDATA[SELECT * FROM jsbf_locationtype]]>
+					</value>
+					<condition name="txtcode" label="方位编号：" labelstyle="2">
+						<value>
+							<![CDATA[
+								code = '#data#'
+							]]>
+						</value>
+					</condition>
+				</select>
+				<insert>
+					<params>
+						<param name="seqid" value="sequence{seq_orgs}"/>
+					</params>
+					<value>
+						<![CDATA[INSERT INTO jsbf_locationtype(id=#{seqid}, @{code}, @{name}, @{type})]]>
+					</value>
+				</insert>
+				<update>
+					<value>
+						<![CDATA[UPDATE jsbf_locationtype(@{code}, @{name}, @{type}) WHERE code = @{code__old}]]>
+					</value>
+				</update>
+				<delete>
+					<value>
+						<![CDATA[DELETE FROM jsbf_locationtype WHERE code = @{code__old} and not exists(select * from jbsf_pagemenus where locationcode = @{code__old})]]>
+					</value>
+				</delete>
+			</sql>
+		</report>
+	</page>
+	<!-- 修改密码 -->
+	<page id="modifypasswordPage" css="/webresources/css/jbsf/wbcsprjcore.css" js="/webresources/script/validate.js,/webresources/jsplugins/jbsf/wbcsbefsave.js">
+		<interceptor>
+			<imports>
+	  	 		   <import>com.wbcs.util.*</import>
+	  	 	 </imports>
+			<preaction>
+				<![CDATA[
+					rrequest.authorize("modifypasswordRpt",Consts.BUTTON_PART,"type{reset}","display","false");
+				]]>
+			</preaction>
+		</interceptor>
+		<report id="modifypasswordRpt" title="&amp;nbsp;" type="form">
+			<interceptor>
+					<saveaction>
+						<![CDATA[
+							rrequest.disableAutoSuccessPrompt();
+							super.doSave(rrequest, rbean, editbean);
+							String effectRowNumsStr = rrequest.getStringAttribute("rtnrownum");
+							int effectRowNums = Integer.parseInt(effectRowNumsStr);
+							if(effectRowNums == 0){
+								rrequest.getWResponse().getMessageCollector().error("旧密码输入错误！", false);
+							}else{
+								rrequest.getWResponse().getMessageCollector().success("密码修改成功！", false);
+							}
+							
+							return WX_RETURNVAL_SUCCESS;
+						]]>
+					</saveaction>
+			</interceptor>
+			<display valuetdwidth="80%" labeltdwidth="20%" labelalign="right" valuealign="left" >
+				<col column="username" label="用户名" br="true"></col>
+				<col column="{non-fromdb}" property="password_old" label="原始密码" br="true">
+					<inputbox type="passwordbox" jsvalidate="isNotEmpty(${invalid.isnotempty})"></inputbox>
+				</col>
+				<col column="{non-fromdb}" property="password" label="新密码" br="true">
+					<inputbox type="passwordbox" jsvalidate="isNotEmpty(${invalid.isnotempty})"></inputbox>
+				</col>
+				<col column="{non-fromdb}" property="passwordvalidate" label="确认密码" br="true">
+					<inputbox type="passwordbox" displayon="insert|update" styleproperty="onblur=''"></inputbox>
+				</col>
+			</display>
+			<sql beforesave="isInputPwd2True">
+				<select>
+					<value>
+						<![CDATA[
+							SELECT * FROM t_user_info WHERE 1=0 or {#condition#}
+						]]>
+					</value>
+					<condition name="txtuserid" source="session{userid}">
+						<value>
+							<![CDATA[
+								id = #data#
+							]]>
+						</value>
+					</condition>
+				</select>
+				<update>
+					<params>
+						<param name="userid" value="session{userid}"/>
+					</params> 
+					<value>
+						rrequest{rtnrownum} = update t_user_info set password = FN_MD5(@{password}) 
+						WHERE exists(select 1 from t_user_info where password = FN_MD5(@{password_old}) and id=#{userid}) and id=#{userid};
+					</value>
+				</update>
+			</sql>
+			<buttons>
+				<button name="modify" menulabel="修改" position="bottom" styleproperty="style='float:right'" extends="${modify.button.default}"></button>
+			</buttons>
+		</report>
+	</page>
+</applications>

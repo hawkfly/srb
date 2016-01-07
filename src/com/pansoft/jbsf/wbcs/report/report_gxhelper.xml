@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	<!--公用功能及帮助字典功能-->
+	<page id="commonPage" css="/webresources/css/jbsf/wbcsprjcore.css,/webresources/css/skins/Aqua/css/ligerui-all.css,/webresources/css/ztree/zTreeStyle/zTreeStyle.css"
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/defaultplugin/core/base.js,/webresources/jsplugins/jbsf/onload.js,/webresources/jsplugins/ztree/jquery.ztree.core-3.5.min.js">
+		<report id="treeRpt" title="树结构实例" width="80%" align="center" pagesize="-1" interceptor="com.pansoft.jbsf.wbcs.interceptor.ItGetree" template="/webresources/pages/getree.jsp">
+			<display labeltdwidth="20%" valuetdwidth="80%" labelbgcolor="#f0f0f0" labelalign="right" valuealign="left" >
+				<col column="id" property="id"></col>
+				<col column="code"></col>
+				<col column="pid" property="pId"></col>
+				<col column="name" property="name"></col>
+				<col column="level"></col>
+			</display>
+			<sql type="statement">
+				<select>
+					<value>
+						<![CDATA[
+						 	select org_id id, org_id code, org_pid pid,org_name name, org_level level from jbsf_orgs
+						]]>
+					</value>
+				</select>
+			</sql>
+		</report>
+	</page>
+</applications>

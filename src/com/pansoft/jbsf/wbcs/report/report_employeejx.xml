@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	
+	<!--理财顾问绩效-->
+	<page id="employeeViewPage">
+		<report id="prjRpt" pagesize="-1" interceptor="com.pansoft.jbsf.wbcs.interceptor.ItJxFilter">
+			<display>
+				<col column="hasyjquery.userid" displaytype="hidden"></col>
+				<col column="hasyjquery.roleid" displaytype="hidden"></col>
+				<col column="hasyjquery.username" label="员工编号" align="left"></col>
+				<col column="hasyjquery.realname" label="员工姓名" align="left"></col>
+				<col column="hasyjquery.jx" label="业绩" datatype="float{#,##0.00}" align="right"></col>
+			</display>
+			<sql>
+				<select>
+					<value id="hasyjquery">
+						<![CDATA[
+							select tj.jx, tj.uid userid, u.realname,u.username,'' roleid from 
+							(
+							 select sum(lc.upral_cjje)*(select value from jbsf_config where type='jxrate' and name=lc.upral_tzqx) jx,
+								   lc.uid, lc.cstm_gx_gwrealname 
+								from(
+									select c.uid,c.cstm_gx_gwid,c.cstm_gx_gwrealname,up.* from 
+										SRB_USER_PDCT up right join
+										(
+										select u.userid uid ,c.* from 
+											SRB_CUSTOMER c right join 
+											(select userid from (select * from jbsf_user_roles where roleid not in ('0','01') and roleid not in(select value from jbsf_config where type = 'jxexclude')) rs group by userid) u
+										on c.cstm_gx_gwid = u.userid
+										)c
+									on up.upral_cstmid = c.cstm_id and (up.upral_year = '#cdtyear#' and up.upral_month = '#cdtmonth#')
+								)lc group by lc.uid, lc.cstm_gx_gwrealname
+							) tj, jbsf_user u where tj.uid = u.id and {#condition#};
+						]]>
+					</value>
+					<condition name="cdtname" label="员工姓名：" labelstyle="2">
+						<value><![CDATA[u.realname like '%#data#%']]></value>
+					</condition>
+					<condition name="cdtyear" label="年：" labelstyle="2">
+						<inputbox type="selectbox">
+							<option label="2015年" value="2015"></option>
+							<option label="2016年" value="2016"></option>
+							<option label="2017年" value="2017"></option>
+							<option label="2018年" value="2018"></option>
+							<option label="2019年" value="2019"></option>
+							<option label="2020年" value="2020"></option>
+							<option label="2021年" value="2021"></option>
+							<option label="2022年" value="2022"></option>
+							<option label="2023年" value="2023"></option>
+							<option label="2024年" value="2024"></option>
+							<option label="2025年" value="2025"></option>
+						</inputbox>
+					</condition>
+					<condition name="cdtmonth" label="月：" labelstyle="2">
+						<inputbox type="selectbox">
+							<option label="1月" value="1"></option>
+							<option label="2月" value="2"></option>
+							<option label="3月" value="3"></option>
+							<option label="4月" value="4"></option>
+							<option label="5月" value="5"></option>
+							<option label="6月" value="6"></option>
+							<option label="7月" value="7"></option>
+							<option label="8月" value="8"></option>
+							<option label="9月" value="9"></option>
+							<option label="10月" value="10"></option>
+							<option label="11月" value="11"></option>
+							<option label="12月" value="12"></option>
+						</inputbox>
+					</condition>
+				</select>
+			</sql>
+			<format>
+				<value>
+					<![CDATA[
+						if(jx == null)jx = new Float("0");
+					]]>
+				</value>
+			</format>
+		</report>
+	</page>
+</applications>

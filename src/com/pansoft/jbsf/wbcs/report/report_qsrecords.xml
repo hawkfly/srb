@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	<!--清算记录查看-->
+	<page id="qsjlPage" js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js">
+		  	<report id="qsjlRpt" type="editablelist2">
+				<display>
+					<col column="sq_id" displaytype="hidden"></col>
+					<col column="sq_cstmid" label="客户编号" displaytype="hidden"></col>
+					<col column="sq_pdctid" label="产品编号" displaytype="hidden"></col>
+					<col column="sq_orderid" label="订单编号" displaytype="hidden"></col>
+					<col column="sq_cstmrealname" label="客户姓名" ></col>
+					<col column="sq_pdctname" label="产品名称"></col>
+					<col column="sq_gmrq" label="购买日期"></col>
+					<col column="sq_pdctzq" label="产品周期"></col>
+					<col column="sq_yqnh" label="预期年化"></col>
+					<col column="sq_cjje" label="成交金额"></col>
+					<col column="sq_sy" label="收益"></col>
+					<col column="sq_time" label="清算时间"></col>
+				</display>
+				<sql>
+					<select>
+						<value><![CDATA[select * from SRB_SQRECORDS where {#condition#} order by sq_time desc]]></value>
+						<condition name="cdtstartdate" label="开始清算日期：" labelstyle="2">
+							<inputbox type="datepicker"></inputbox>
+							<value><![CDATA[sq_time >= '#data#']]></value>
+						</condition>
+						<condition name="cdtenddate" label="结束清算日期：" labelstyle="2">
+							<inputbox type="datepicker"></inputbox>
+							<value><![CDATA[sq_time <= '#data#']]></value>
+						</condition>
+					</select>
+					<!-- <condition name="cdtstatus" label="发布状态：" labelstyle="2">
+						<value><![CDATA[ad_sffb = '#data#']]></value>
+						<inputbox type="selectbox" defaultvalue="0">
+							<option label="未发布" value="0"></option>
+							<option label="已发布" value="1"></option>
+						</inputbox>
+					</condition> -->
+				</sql>
+			</report>
+	</page>
+</applications>

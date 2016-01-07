@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	
+	<!--理财产品发布-->
+	<page id="lipdctmgPage"
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/jbsf/onload.js,/webresources/jsplugins/jbsf/wbcsaftsave.js,/webresources/script/validate.js">
+		<report id="lipdctmgRpt" type="listform" onload="openPage2Tab" pagesize="-1" rowselect="single">
+			<!-- pt_id, pt_name, pt_yqnh, pt_tzqx, pt_xmgm, pt_type, pt_shfs, pt_qtje, pt_fbsj, pt_ytbl, pt_ytje, pt_hkfs, pt_shjz, pt_xmxq, pt_qixx, pt_bzcs, pt_icon, pt_sfwb, pt_sftj -->
+			<display>
+				<col column="pt_id" displaytype="hidden"></col>
+				<col column="pt_name" label="产品名称"></col>
+				<col column="pt_yqnh" label="预期年化收益"></col>
+				<col column="pt_tzqx" label="投资期限(月)"></col>
+				<col column="pt_xmgm" label="项目规模"></col>
+				<col column="pt_shfs" label="赎回方式"></col>
+				<col column="pt_qtje" label="起始金额"></col>
+				<col column="pt_hkfs" label="还款方式"></col>
+				<col column="pt_shjz" label="赎回机制"></col>
+				<col column="pt_ytbl" label="已投比率"></col>
+				<!-- <col column="pt_icon" label="图标">
+					<inputbox type="file" maxsize="10240" allowedtypes="jpg;gif;png" newfilename="{timestamp}" displaytype="image" deletetype="1" savepath="relative{\images\xmicon\}" rooturl="/images/xmicon/"></inputbox>
+				</col> -->
+				<col column="pt_sftj" label="是否推荐">
+					<inputbox type="checkbox">
+						<option label="" value="1"></option>
+					</inputbox>
+				</col>
+				<col column="pt_xh" label="序号" defaultvalue="0" width="30">
+					<inputbox styleproperty="maxlength='30'" jsvalidate="isNumeric({0}不是合法数字)"></inputbox> 
+				</col>
+				<col column="pt_icon" label="简介"></col>
+			</display>
+			<sql>
+				<select>
+					<value><![CDATA[select * from SRB_PDCT where {#condition#} order by pt_sftj desc ,pt_xh desc, pt_fbsj desc]]></value>
+					<condition name="cdtName" label="项目名称：" labelstyle="2">
+						<value><![CDATA[pt_name like '%#data#%']]></value>
+					</condition>
+					<condition name="cdtdefault" label="完结否：" labelstyle="2" defaultvalue="0">
+						<inputbox type="selectbox">
+							<option label="未完结" value="0"></option>
+							<option label="已完结" value="1"></option>
+						</inputbox>
+						<value><![CDATA[pt_sfwb = '#data#']]></value>
+					</condition>
+					<condition name="cdtsffb" label="是否发布：" labelstyle="2" defaultvalue="0">
+						<inputbox type="radiobox">
+							<option label="已发布" value="1"></option>
+							<option label="未发布" value="0"></option>
+						</inputbox>
+						<value><![CDATA[pt_sffb = '#data#']]></value>
+					</condition>
+				</select>
+				<update>
+					<value><![CDATA[update SRB_PDCT(@{pt_xh}, @{pt_sftj}) where pt_id = @{pt_id}]]></value>
+				</update>
+			</sql>
+			<format>
+				<imports>
+             		<import>java.math</import>
+             		<import>java.util</import>
+					<import>com.wbcs.jbsf.util</import>
+					<import>com.wbcs.jbsf.bean</import>
+             	</imports>
+				<value>
+					<![CDATA[
+						pt_yqnh = String.valueOf(new BigDecimal(pt_yqnh).multiply(new BigDecimal(100)).intValue())+"%";
+						
+						String tabid = rrequest.getRequest().getParameter("tabid");
+						pt_name =  "<a href='"+rrequest.getRequest().getRequestURL()+"?PAGEID=lipdcteditPage&cdtid="+pt_id+"' class='editnews' id='"+UUID.randomUUID()+"' name='"+tabid+"'>"+pt_name+"</a>";
+					]]>
+				</value>
+			</format>
+			<buttons>
+				<button label="添加" name="customaddCstmBtn" extends="${wbcs.button.default}" position="searchbox">
+					<![CDATA[
+						var prjname = $.jbsf.core.contextpath();
+						var openurl = prjname+'/jbsf.sr?PAGEID=lipdcteditPage&lipdcteditRpt_ACCESSMODE=add';
+						var parentabid = $.jbsf.core.getParameter('tabid');
+						$.jbsf.wbcs.openTab(openurl, '添加理财产品', parentabid, 'newpdct');
+					]]>
+				</button>
+				<button label="保存" name="saveBtn" positionorder="1" extends="${save.button.default}" position="searchbox"></button>
+				<button name="cstmpublishBtn" positionorder="2" label="发布" position="searchbox" class="com.wbcs.system.buttons.ServerSQLActionButton" successprompt="发布成功！" failedprompt="发布失败！" autoreportdata="true" extends="${wbcs.button.default}">
+					<value>
+						<![CDATA[update SRB_PDCT(pt_sffb = '1') where pt_id=@{pt_id}]]>
+					</value>
+				</button>
+			</buttons>
+		</report>
+	</page>
+	<page id="lipdcteditPage" css="/webresources/css/jbsf/wbcsprjcore.css" js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/script/validate.js,/js/srb/srb.js">
+		<interceptor>
+			<imports>
+	  	 		   <import>com.wbcs.util.*</import>
+	  	 	 </imports>
+			<preaction>
+				rrequest.authorize("lipdcteditRpt",Consts.BUTTON_PART,"type{cancel}","display","false");
+				rrequest.authorize("lipdcteditRpt",Consts.BUTTON_PART,"type{reset}","display","false");
+				rrequest.authorize("lipdcteditRpt",Consts.BUTTON_PART,"type{searchbox}","display","false");
+				
+				rrequest.authorize("xmxxRpt",Consts.BUTTON_PART,"type{cancel}","display","false");
+				rrequest.authorize("xmxxRpt",Consts.BUTTON_PART,"type{reset}","display","false");
+				rrequest.authorize("xmxxRpt",Consts.BUTTON_PART,"type{searchbox}","display","false");
+				rrequest.authorize("xmxxRpt",Consts.BUTTON_PART,"type{save}","display","false");
+				rrequest.authorize("xmxxRpt",Consts.BUTTON_PART,"type{add}","display","false");
+				
+				rrequest.authorize("qyxxRpt",Consts.BUTTON_PART,"type{cancel}","display","false");
+				rrequest.authorize("qyxxRpt",Consts.BUTTON_PART,"type{reset}","display","false");
+				rrequest.authorize("qyxxRpt",Consts.BUTTON_PART,"type{searchbox}","display","false");
+				rrequest.authorize("qyxxRpt",Consts.BUTTON_PART,"type{save}","display","false");
+				rrequest.authorize("qyxxRpt",Consts.BUTTON_PART,"type{add}","display","false");
+				
+				rrequest.authorize("bzcsRpt",Consts.BUTTON_PART,"type{cancel}","display","false");
+				rrequest.authorize("bzcsRpt",Consts.BUTTON_PART,"type{reset}","display","false");
+				rrequest.authorize("bzcsRpt",Consts.BUTTON_PART,"type{searchbox}","display","false");
+				rrequest.authorize("bzcsRpt",Consts.BUTTON_PART,"type{save}","display","false");
+				rrequest.authorize("bzcsRpt",Consts.BUTTON_PART,"type{add}","display","false");
+				<!-- 不显示自定义按钮 -->
+				<!-- rrequest.authorize("jiaotongwucanbuzhu", Consts.BUTTON_PART,"submitBtn", "display", "false");
+				rrequest.authorize("jiaotongwucanbuzhu", Consts.BUTTON_PART, "testBtn", "display", "false"); -->
+			</preaction>
+		</interceptor>
+		<html id="hiddens">
+			<![CDATA[
+				<input type='hidden' id='idkey' value='pt_id'/>
+			]]>
+		</html>
+		<report id="lipdcteditRpt" type="form">
+			<display labeltdwidth="100" labelalign="right">
+				<col column="pt_id" displaytype="hidden"></col>
+				<col column="pt_name" label="产品名称:">
+					<inputbox type="textbox" jsvalidate="isNotEmpty('产品名称不允许为空！')"></inputbox>
+				</col>
+				<col column="pt_yqnh" label="预期年化收益:">
+					<inputbox type="textbox" jsvalidate="isNumeric('输入值必须为数字')" afterdescription="&lt;font color='red'&gt;值应该小于1&lt;/font&gt;"></inputbox>
+				</col>
+				<col column="pt_tzqx" label="投资期限(月):" br="true">
+					<inputbox type="selectbox">
+						<option source="@{select name,note from jbsf_config where type='jxrate'}" label="note" value="name"></option>
+					</inputbox>
+				</col>
+				<col column="pt_xmgm" label="项目规模(元):" datatype="float{#,##0.00}">
+					<inputbox type="textbox" jsvalidate="isMoney('输入值必须为数字')"></inputbox>
+				</col>
+				<col column="pt_ktje" label="可投金额(元):" datatype="float{#,##0.00}">
+					<inputbox type="textbox" jsvalidate="isMoney('输入值必须为数字')" afterdescription="&lt;font color='red'&gt;不大于项目规模&lt;/font&gt;"></inputbox>
+				</col>
+				<col column="pt_qtje" label="起始金额(元):" datatype="float{#,##0.00}" br="true">
+					<inputbox type="textbox" jsvalidate="isMoney('输入值必须为数字')"></inputbox>
+				</col>
+				<col column="pt_shfs" label="赎回方式:"></col>
+				<col column="pt_hkfs" label="还款方式:" valuestyleproperty="style='display:none;'" labelstyleproperty="style='display:none;'">
+					<inputbox type="textbox" jsvalidate="isNotEmpty('还款方式不允许为空！')"></inputbox>
+				</col>
+				<col column="pt_fxfs" label="返利方式:">
+					<inputbox type="selectbox">
+						<option label="按月返利，到期返还本金" value="1"></option>
+						<option label="到期一次性返还利息和本金" value="2"></option>
+					</inputbox>
+				</col>
+				<col column="pt_shjz" label="赎回机制:" br="true"></col>
+				<col column="pt_icon" label="简介(限4个字):">
+					<inputbox type="textbox" jsvalidate="isNotEmpty('简介不允许为空！')"></inputbox>
+				</col>
+				<col column="pt_ytbl" label="已投比率:"></col>
+				<!-- <col column="pt_icon" label="图标">
+					<inputbox type="file" maxsize="10240" allowedtypes="jpg;gif;png" newfilename="{timestamp}" displaytype="image" deletetype="1" savepath="relative{\images\xmicon\}" rooturl="/images/xmicon/"></inputbox>
+				</col> -->
+				<col column="pt_fbsj" label="发布时间:" datatype="date{yyyy-MM-dd}" defaultvalue="now{}"></col>
+			</display>
+			<sql savebinding="xmxxRpt;qyxxRpt;bzcsRpt" beforesave="setid">
+				<select>
+					<value><![CDATA[select * from SRB_PDCT where 1=0 or {#condition#}]]></value>
+					<condition name="cdtid" hidden="true">
+						<value><![CDATA[pt_id = '#data#']]></value>
+						<!-- <inputbox type="textbox" styleproperty="style='display:none;'"></inputbox> -->
+					</condition>
+				</select>
+				<insert>
+					<params>
+						<param name="fbsj" value="now{}" datatype="date{yyyy-MM-dd}"/>
+					</params>
+					<value><![CDATA[insert into SRB_PDCT(@{pt_id},@{pt_name},@{pt_yqnh},@{pt_tzqx},@{pt_xmgm},@{pt_ktje},@{pt_shfs},@{pt_qtje},@{pt_hkfs},@{pt_shjz},@{pt_icon},@{pt_fxfs},pt_fbsj = #{fbsj})]]></value>
+				</insert>
+				<update>
+					<params>
+						<param name="fbsj" value="now{}" datatype="date{yyyy-MM-dd}"/>
+					</params>
+					<value><![CDATA[update SRB_PDCT(@{pt_name},@{pt_yqnh},@{pt_tzqx},@{pt_xmgm},@{pt_ktje},@{pt_shfs},@{pt_qtje},@{pt_hkfs},@{pt_shjz},@{pt_icon},pt_fbsj = #{fbsj},@{pt_fxfs}) where pt_id = @{pt_id}]]></value>
+				</update>
+			</sql>
+		</report>
+		<tabpanel id="flpanel">
+			<report id="xmxxRpt" parenttitle="项目详情" type="form" depends="lipdcteditRpt" dependsparams="pdctid=@{pt_id}">
+				<interceptor>
+						<imports>
+							<import>java.util.*</import>
+						</imports>
+						<saveaction>
+							<![CDATA[
+								List lstInsertData = rrequest.getLstInsertedData("lipdcteditRpt");
+								if(lstInsertData != null && lstInsertData.size() > 0){
+									Map mfirstRowData = lstInsertData.get(0);
+									String billcode = (String)mfirstRowData.get("pt_id");
+									List lstCurrInsertExternalVals = rrequest.getLstInsertedParamValues("xmxxRpt");
+									Map mCurrExternalData = lstCurrInsertExternalVals.get(0);
+									mCurrExternalData.put("pdctid", billcode);
+								}
+								return super.doSave(rrequest, rbean, editbean);
+							]]>
+						</saveaction>
+					</interceptor>
+				<display>
+					<col column="pt_id" displaytype="hidden"></col>
+					<col column="pt_xmxq">
+						<inputbox type="richtextbox" styleproperty="style='width:100%; height: 350px;'"></inputbox>
+					</col>
+				</display>
+				<sql>
+					<select>
+						<value><![CDATA[SELECT pt_id,pt_xmxq FROM SRB_PDCT where {#condition#}]]></value>
+						<condition name="pdctid" hidden="true">
+							<value><![CDATA[pt_id = '#data#']]></value>
+						</condition>
+					</select>
+					<insert>
+						<params>
+							<param name="pdctid" value="url{pdctid}"/>
+						</params>
+						<value><![CDATA[update SRB_PDCT(@{pt_xmxq}) where pt_id = #{pdctid}]]></value>
+					</insert>
+					<update>
+						<params>
+							<param name="pdctid" value="url{pdctid}"/>
+						</params>
+						<value><![CDATA[update SRB_PDCT(@{pt_xmxq}) where pt_id = #{pdctid}]]></value>
+					</update>
+				</sql>
+			</report>
+			<report id="qyxxRpt" parenttitle="企业信息" type="form" depends="lipdcteditRpt" dependsparams="pdctid=@{pt_id}">
+				<interceptor>
+						<imports>
+							<import>java.util.*</import>
+						</imports>
+						<saveaction>
+							<![CDATA[
+								List lstInsertData = rrequest.getLstInsertedData("lipdcteditRpt");
+								if(lstInsertData != null && lstInsertData.size() > 0){
+									Map mfirstRowData = lstInsertData.get(0);
+									String billcode = (String)mfirstRowData.get("pt_id");
+									List lstCurrInsertExternalVals = rrequest.getLstInsertedParamValues("qyxxRpt");
+									Map mCurrExternalData = lstCurrInsertExternalVals.get(0);
+									mCurrExternalData.put("pdctid", billcode);
+								}
+								return super.doSave(rrequest, rbean, editbean);
+							]]>
+						</saveaction>
+				</interceptor>
+				<display>
+					<col column="pt_id" displaytype="hidden"></col>
+					<col column="pt_qixx">
+						<inputbox type="richtextbox" styleproperty="style='width:100%; height: 350px;'"></inputbox>
+					</col>
+				</display>
+				<sql>
+					<select>
+						<value><![CDATA[SELECT pt_id,pt_qixx FROM SRB_PDCT where {#condition#}]]></value>
+						<condition name="pdctid" hidden="true">
+							<value><![CDATA[pt_id = '#data#']]></value>
+						</condition>
+					</select>
+					<insert>
+						<params>
+							<param name="pdctid" value="url{pdctid}"/>
+						</params>
+						<value><![CDATA[update SRB_PDCT(@{pt_qixx}) where pt_id = #{pdctid}]]></value>
+					</insert>
+					<update>
+						<params>
+							<param name="pdctid" value="url{pdctid}"/>
+						</params>
+						<value><![CDATA[update SRB_PDCT(@{pt_qixx}) where pt_id = #{pdctid}]]></value>
+					</update>
+				</sql>
+			</report>
+			<report id="bzcsRpt" parenttitle="保障措施" type="form" depends="lipdcteditRpt" dependsparams="pdctid=@{pt_id}">
+				<interceptor>
+						<imports>
+							<import>java.util.*</import>
+						</imports>
+						<saveaction>
+							<![CDATA[
+								List lstInsertData = rrequest.getLstInsertedData("lipdcteditRpt");
+								if(lstInsertData != null && lstInsertData.size() > 0){
+									Map mfirstRowData = lstInsertData.get(0);
+									String billcode = (String)mfirstRowData.get("pt_id");
+									List lstCurrInsertExternalVals = rrequest.getLstInsertedParamValues("bzcsRpt");
+									Map mCurrExternalData = lstCurrInsertExternalVals.get(0);
+									mCurrExternalData.put("pdctid", billcode);
+								}
+								return super.doSave(rrequest, rbean, editbean);
+							]]>
+						</saveaction>
+					</interceptor>
+				<display>
+					<col column="pt_id" displaytype="hidden"></col>
+					<col column="pt_bzcs">
+						<inputbox type="richtextbox" styleproperty="style='width:100%; height: 350px;'"></inputbox>
+					</col>
+				</display>
+				<sql>
+					<select>
+						<value><![CDATA[SELECT pt_id,pt_bzcs FROM SRB_PDCT where {#condition#}]]></value>
+						<condition name="pdctid" hidden="true">
+							<value><![CDATA[pt_id = '#data#']]></value>
+						</condition>
+					</select>
+					<insert>
+						<params>
+							<param name="pdctid" value="url{pdctid}"/>
+						</params>
+						<value><![CDATA[update SRB_PDCT(@{pt_bzcs}) where pt_id = #{pdctid}]]></value>
+					</insert>
+					<update>
+						<params>
+							<param name="pdctid" value="url{pdctid}"/>
+						</params>
+						<value><![CDATA[update SRB_PDCT(@{pt_bzcs}) where pt_id = #{pdctid}]]></value>
+					</update>
+				</sql>
+			</report>
+		</tabpanel>
+	</page>
+</applications>

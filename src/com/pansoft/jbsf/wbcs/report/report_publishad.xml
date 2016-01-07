@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	
+	<!--广告发布-->
+	<page id="admgPage" css="/webresources/css/jbsf/wbcsprjcore.css" 
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/jbsf/onload.js,/webresources/jsplugins/jbsf/wbcsaftsave.js">
+		 <hpanel id="adhpanel">
+		  	<report id="admgRpt">
+				<display>
+					<col column="ad_id" displaytype="hidden"></col>
+					<col column="ad_name" label="名称"></col>
+					<col column="ad_description" label="描述"></col>
+					<col column="ad_img" label="图片"></col>
+				</display>
+				<sql>
+					<select>
+						<value><![CDATA[select * from SRB_AD where {#condition#} order by ad_fbxh]]></value>
+						<condition name="cdtname" label="名称：" labelstyle="2">
+							<value><![CDATA[ad_name like '%#data#%']]></value>
+						</condition>
+					</select>
+					<!-- <condition name="cdtstatus" label="发布状态：" labelstyle="2">
+						<value><![CDATA[ad_sffb = '#data#']]></value>
+						<inputbox type="selectbox" defaultvalue="0">
+							<option label="未发布" value="0"></option>
+							<option label="已发布" value="1"></option>
+						</inputbox>
+					</condition> -->
+				</sql>
+				<format>
+					<value>
+						<![CDATA[
+							if(ad_img!=null&&!ad_img.trim().equals(""))
+						   {
+						    	ad_img="<img src=\""+ad_img+"\" width=50 height=40>";
+						   }
+						]]>
+					</value>
+				</format>
+			</report>
+			<report id="adeditRpt" type="form" depends="admgRpt" dependsparams="cdtid=@{ad_id}">
+				<display labelalign="right" labeltdwidth="80">
+					<col column="ad_id" displaytype="hidden"></col>
+					<col column="ad_name" label="名称"></col>
+					<col column="ad_fbxh" label="序号" br="true" labelstyleproperty="width=60"></col>
+					<col column="ad_description" label="描述" br="true" valuestyleproperty="colspan='3'">
+						<inputbox type="textareabox"></inputbox>
+					</col>
+					<col column="ad_img" label="图片" br="true">
+						<inputbox type="file" maxsize="10240" allowedtypes="jpg;gif;png" newfilename="{timestamp}" displaytype="image" deletetype="1" savepath="relative{\images\xmicon\}" rooturl="/images/xmicon/" interceptor="com.pansoft.jbsf.wbcs.interceptor.ItCheckImg"></inputbox>
+					</col>
+					
+					<col column="ad_nr" label="内容">
+						<inputbox type="richtextbox" styleproperty="style='width:450px; height: 200px;'"></inputbox>
+					</col>
+				</display>
+				<sql>
+					<select>
+						<value><![CDATA[select * from SRB_AD where {#condition#} order by ad_fbxh]]></value>
+						<condition name="cdtid" hidden="true">
+							<value><![CDATA[ad_id = '#data#']]></value>
+						</condition>
+					</select>
+					<insert>
+						<params>
+							<param name="adid" value="uuid{}"/>
+						</params>
+						<value><![CDATA[insert into SRB_AD(ad_id = #{adid},@{ad_name},@{ad_description},@{ad_img},@{ad_fbxh},@{ad_nr})]]></value>
+					</insert>
+					<update>
+						<value><![CDATA[update SRB_AD(@{ad_name},@{ad_description},@{ad_img},@{ad_fbxh},@{ad_nr}) where ad_id = @{ad_id}]]></value>
+					</update>
+				</sql>
+			</report>
+		 </hpanel>
+	</page>
+</applications>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	<!--赎回审核-->
+	<page id="shcashPage"
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/jbsf/wbcsbefsave.js">
+		<html id="h">
+			<![CDATA[
+				<div id="gobackReasonDiv" class="hide">
+					<textarea id="gobackReasontextarea" rows="6" cols="20"></textarea>
+				</div>
+			]]>
+		</html>
+		<!-- 待办列表 -->
+		<report id="shcashRpt" type="editablelist2" title="&amp;nbsp;" rowselect="single" selectcallback="dynjssh" interceptor="com.pansoft.jbsf.wbcs.interceptor.ItVerifySh">
+			<display>
+				<col column="queryuoral.coral_id" displaytype="hidden"></col>
+				<col column="queryorgiorder.upral_id" property="pcoral_id" displaytype="hidden"></col>
+				<col column="queryuoral.coral_cstmid" displaytype="hidden"></col>
+				<col column="getorder.id" property="hflowid" displaytype="hidden"></col>
+				<col column="getorder.h_coralid" displaytype="hidden"></col>
+				<col column="queryuoral.coral_orderid" displaytype="hidden"></col>
+				<col column="queryorgiorder.upral_orderid" property="pcoral_orderid" displaytype="hidden"></col>
+				<col column="queryuoral.coral_czz" displaytype="hidden"></col>
+				<col column="pdct.opral_orderid" displaytype="hidden"></col>
+				<col column="pdct.pt_id" displaytype="hidden"></col>
+				<col column="queryuoral.coral_realdatetime" displaytype="hidden"></col>
+				<col column="pdct.pt_fxfs" displaytype="hidden"></col>
+				<col column="queryuoral.coral_cstmname" label="客户名称"></col>
+				<col column="queryuoral.coral_cstmrealname" label="真实名称"></col>
+				<col column="pdct.pt_name" label="产品名称"></col>
+				<col column="pdct.pt_yqnh" label="预期年化"></col>
+				<col column="pdct.pt_tzqx" label="投资期限"></col>
+				<col column="queryuoral.coral_cjje" property="shje" label="赎回金额"></col>
+				<col column="queryorgiorder.upral_cjje" property="cjje" label="成交金额"></col>
+				<col column="queryuoral.coral_realfhje" label="实际赎回金额">
+					<inputbox jsvalidate="isNumeric({0}不是合法数字)"></inputbox>
+				</col>
+				<col column="queryuoral.coral_realshrate" label="赎回扣点">
+					<inputbox jsvalidate="isNumeric({0}不是合法数字)"></inputbox>
+				</col>
+				<col column="getorder.h_startdatetime" label="发起时间"></col>
+			</display>
+			<sql>
+				<select>
+					<!-- 登录人审核节点待审核的数据 -->
+					<value id="getorder">
+						<![CDATA[
+							select * from SRB_FLOW_HISTORY 
+							where h_cflowid in (select flow_id from SRB_CONFIG_FLOW where flow_userid = '#cdtuserid#') and h_isok = 0
+						]]>
+					</value>
+					<!-- 登录人审核节点对应的用户订单信息 -->
+					<value id="queryuoral" depends="coral_id='getorder.h_coralid'" dependscondition="coral_id in (#getorder.h_coralid#)" dependstype="multiple">
+						<![CDATA[
+							select * from SRB_USER_ORDER o where coral_type = 'out' and coral_realdatetime = ' ' and {#dependscondition#}
+						]]>
+					</value>
+					<!-- 得到当前用户产品信息 -->
+					<value id="queryorgiorder" depends="upral_orderid = 'queryuoral.coral_orderid'" dependscondition="upral_orderid in( #queryuoral.coral_orderid#)">
+						<![CDATA[
+							select upral_id, upral_orderid, upral_cjje from SRB_USER_PDCT o where {#dependscondition#}
+						]]>
+					</value>
+					<!-- 通过原始订单编号获取产品信息, 尚融宝系统订单和商品只能是一对一的关系，所有可以让流程直接关联到订单上！ -->
+					<value id="pdct" depends="opral_orderid = 'queryuoral.coral_orderid'" dependscondition="opral_orderid in(#queryuoral.coral_orderid#)">
+						<![CDATA[
+							select pt_id, pt_name, pt_yqnh, pt_tzqx, opral_orderid, pt_fxfs from SRB_PDCT p, SRB_ORDER_PDCTS op
+							where p.pt_id = op.opral_pdctid and {#dependscondition#}
+						]]>
+					</value>
+					<condition name="cdtuserid" source="session{userid}" belongto="getorder"></condition>
+				</select>
+				<!-- 审核通过 ： 更新history, 插入history,  -->
+				<update>
+					<value><![CDATA[
+						update SRB_USER_ORDER(@{coral_realshrate},@{coral_realfhje},@{coral_realdatetime}) where coral_id = @{coral_id};
+					]]></value>
+				</update>
+			</sql>
+			
+		</report>
+	</page>
+	
+	<!-- 取现申请 -->
+	<page id="qxcashPage" css="/webresources/css/jbsf/wbcsprjcore.css" 
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/jbsf/wbcsbefsave.js,/webresources/script/validate.js">
+		  <report id="qxcashRpt" type="editablelist2" title="取现申请" rowselect="multiply" interceptor="com.pansoft.jbsf.wbcs.interceptor.ItQxcash">
+		  	<display>
+		  		<col column="qx_id" label="申请编号" displaytype="hidden"></col>
+		  		<col column="qx_cstmid" label="客户编号" displaytype="hidden"></col>
+		  		<col column="qx_fksj" label="放款时间" displaytype="hidden"></col>
+		  		<col column="qx_username" label="客户名称"></col>
+		  		<col column="qx_realname" label="真实名称"></col>
+		  		<col column="qx_yhk" label="卡号"></col>
+		  		<col column="qx_khh" label="开户行"></col>
+		  		<col column="qx_je" label="取现金额"></col>
+		  		<col column="acc_balance" label="账户余额"></col>
+		  		<col column="qx_fkpj" label="放款凭证号">
+		  			<inputbox jsvalidate="isNotEmpty(凭证号不允许为空！)"></inputbox>
+		  		</col>
+		  		<col column="qx_sqsj" label="申请时间"></col>
+		  		<col column="qx_note" label="备注"></col>
+		  	</display>
+		  	<sql>
+		  		<select>
+		  			<value><![CDATA[select sq.*, acc.acc_balance from SRB_QXSQ sq, SRB_ACCOUNTINFO acc where acc.acc_user = sq.qx_cstmid and {#condition#}]]></value>
+		  			<condition name="cdtispass" defaultvalue="0" hidden="true">
+		  				<value><![CDATA[qx_ispass = '#data#']]></value>
+		  			</condition>
+		  		</select>
+		  		<update>
+		  			<params>
+		  				<param name="newbalance" value="old-curqx"/>
+		  			</params>
+		  			<!-- 1、取现申请更新  放款凭证、放款时间以及是否通过字段 -->
+		  			<!-- 2、更新用户账户表中的金额字段，金额 = 原金额 - 当前取现金额-->
+		  			<value><![CDATA[
+		  				update SRB_QXSQ(@{qx_fkpj}, @{qx_fksj}, qx_ispass = '1') where qx_id = @{qx_id};
+		  				update SRB_ACCOUNTINFO(acc_balance=#{newbalance}, acc_status='1') where acc_user = @{qx_cstmid};
+		  			]]></value>
+		  		</update>
+		  	</sql>
+		  	<buttons>
+		  		<button name="passBtn" label="通过" position="title" extends="${save.button.default}"></button>
+		  	</buttons>
+		  </report>
+	</page>
+</applications>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns="http://www.wbcs.com"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.resources.xsd">
+  <resource key="invalid.isnotempty">
+		<![CDATA[{0}不能为空]]>
+  </resource>
+  <resource key="sqlbutton" type="com.wbcs.config.resource.XmlElementRes">
+  	
+  </resource>
+</resources>

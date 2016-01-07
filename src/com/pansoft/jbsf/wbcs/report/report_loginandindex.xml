@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	<!-- 后台登录 -->
+	<page id="loginPageClt" js="/webresources/jsplugins/jbsf/md5.js">
+		
+		<report id="loginRpt" type="form" template="/login.jsp" interceptor="com.wbcs.jbsf.auth.interceptor.ItprLogin">
+			<display>
+				<col column="v1.userid" displaytype="hidden"></col>
+				<col column="v1.username"></col>
+				<col column="v1.realname"></col>
+				<col column="v1.orgid"></col>
+				<col column="v2.siteid"></col>
+				<col column="v2.lmids"></col>
+				<col column="v1.redirecturl"></col>
+				<col column="v3.id" property="samesiteid"></col>
+				<col column="v3.sitename"></col>
+			</display>
+			<sql>
+				<select>
+					<value id="v1">
+						<![CDATA[
+							SELECT ID userid, username, realname,islock,orgid,
+							       'jbsf.sr?PAGEID=indexPage' redirecturl FROM jbsf_user where 1=0 or (username = '#txtusername#' and password = '#txtpassword#' and islock='0')
+						]]>
+					</value>
+					<value id="v2">
+						<![CDATA[
+							select '' siteid, '' lmids from jbsf_user_roles where 1=0
+						]]>
+					</value>
+					<!-- <value id="v3" depends="id = 'v2.siteid'"> -->
+					<value id="v3">
+						<![CDATA[
+							select '' id, '' sitename from dual where 1=0
+						]]>
+					</value>
+					<condition name="txtusername" >
+						<inputbox type="textbox"></inputbox>
+					</condition>
+					<condition name="txtpassword" >
+						<inputbox type="passwordbox"></inputbox>
+					</condition>
+					<condition name="agentusername">
+						<inputbox type="textbox"></inputbox>
+					</condition>
+					<condition name="agentpassword" >
+						<inputbox type="passwordbox"></inputbox>
+					</condition>
+				</select>
+			</sql>
+			<buttons>
+				<button name="loginBtn" label="button{&lt;a href='#' class='btn-login' &gt;&lt;/a&gt;}" extends="${wbcs.button.default}">
+					<![CDATA[
+						var username = document.getElementById('loginPageClt_guid_loginRpt_condition_txtusername').value;
+						var password = document.getElementById('loginPageClt_guid_loginRpt_condition_txtpassword').value;
+						password = hex_md5(password);
+			        	password = password.toUpperCase();
+						//search({'pageid':'loginPageClt','reportid':'loginRpt','paramsObj':{'txtusername':username,'txtpassword':password}});
+					]]>
+				</button>
+			</buttons>
+		</report>
+		
+	</page>
+	<!-- 后台首页 -->
+	<page id="indexPage" 
+		  css="/webresources/css/jbsf/wbcsprjcore.css,/webresources/css/skins/Aqua/css/ligerui-all.css,/webresources/css/ztree/zTreeStyle/zTreeStyle.css,/webresources/css/demos.css"
+		  js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js,/webresources/jsplugins/defaultplugin/core/base.js,/webresources/jsplugins/defaultplugin/plugins/ligerLayout.js,/webresources/jsplugins/defaultplugin/plugins/ligerTab.js,/webresources/jsplugins/defaultplugin/plugins/ligerMenu.js,/webresources/jsplugins/jbsf/onload.js,/webresources/jsplugins/ztree/jquery.ztree.core-3.5.min.js,/js/srb/srb.js">
+		<interceptor>
+			<imports>
+	  	 		   <import>com.wbcs.util.*</import>
+	  	 	 </imports>
+			<preaction>
+				<![CDATA[
+					rrequest.authorize("indexRpt",Consts.BUTTON_PART,"type{save}","display","false");
+				]]>
+			</preaction>
+		</interceptor>
+		<html id="h">
+			<![CDATA[
+				<div id="gobackReasonDiv" class="hide">
+					<textarea id="gobackReasontextarea" rows="6" cols="20"></textarea>
+				</div>
+			]]>
+		</html>
+		<report id="indexRpt" title="赎回申请" width="100%" align="center" pagesize="-1" template="/webresources/pages/index.jsp" onload="init" extends="shcashPage.shcashRpt">
+			<buttons>
+				<button label="通过" name="passCstmBtn" extends="${wbcs.button.default}" position="title">
+					<![CDATA[
+						var thispageid = $.jbsf.wbcs.getPageid();
+						var datas = getReportDatas(thispageid, 'indexRpt', ['coral_realshrate', 'coral_realfhje', 'coral_id', 'hflowid', 'h_coralid', 'coral_orderid', 'pt_id', 'coral_cstmid', 'cjje', 'shje'], {name:'SELECTEDROW',value:true});
+						invokeComponentSqlActionButton(thispageid, 'indexRpt', 'passsqlBtn', datas, {whatbtn:'pass'}, false, null);
+					]]>
+				</button>
+				<button label="不通过" name="noCstmBtn" extends="${wbcs.button.default}" position="title">
+					<![CDATA[
+						wx_confirm($('#gobackReasonDiv').html(),'退回原因', '600', '200', function(){
+							var thispageid = $.jbsf.wbcs.getPageid();
+							var rejectnote = $('#gobackReasontextarea').val();
+							var datas = getReportDatas(thispageid, 'indexRpt', ['hflowid','h_coralid'], {name:'SELECTEDROW',value:true});
+							invokeComponentSqlActionButton(thispageid, 'indexRpt', 'nosqlBtn', datas, {whatbtn:'no', note: rejectnote}, false, null);
+						});
+					]]>
+				</button>
+				<button name="passsqlBtn" label="通过按钮核心处理" position="other" class="com.wbcs.system.buttons.ServerSQLActionButton" successprompt="审核成功！" failedprompt="审核失败！" autoreportdata="true">
+					<!-- 更新用户订单的真实赎回比率以及计算得到的真实返还金额 -->
+					<!-- 更新流程历史中当前这个节点为审批完成状态以及审批完成时间 -->
+					<!-- 插入新的数据到流程历史表中，供下面节点审批 -->
+					<!-- 流程结束情况下更新用户订单的赎回真实完成时间 -->
+					<!-- 流程结束情况下更新用户产品中扣除掉赎回后剩余的产品金额，如果全部赎回，表示本产品为结束状态，以及结束原因 -->
+					<params>
+						<param name="whatbtn" value="!{whatbtn}"/>
+						<param name="dtime" value="now{}" datatype="timestamp"/>
+						<param name="uuid" value="uuid{}"/>
+						<param name="cflowid" value="?"/>
+						<param name="cflowstatus" value="?"/>
+						<param name="note" value="正常费用允许赎回！"/>
+						<param name="isok" value="0"/>
+						
+						<param name="cjje" value="?"/>
+						<param name="sfjs" value="1"/>
+						<param name="jsrq" value="?"/>
+						<param name="jsyy" value="允许赎回！"/>
+						<param name="balance" value="?+?"/>
+					</params>
+					<value><![CDATA[
+						update SRB_USER_ORDER(@{coral_realshrate},@{coral_realfhje}) where coral_id = @{coral_id};
+						update SRB_FLOW_HISTORY(h_isok='1', h_enddatetime = #{dtime}) where id = @{hflowid};
+						insert into SRB_FLOW_HISTORY(id=#{uuid}, h_cflowid=#{cflowid}, h_cflowstatus=#{cflowstatus}, @{h_coralid}, h_startdatetime=#{dtime}, h_note=#{note}, h_isok = #{isok});
+						update SRB_USER_ORDER(coral_realdatetime=#{dtime}) where coral_id = @{coral_id};
+						update SRB_USER_PDCT(upral_cjje = #{cjje},upral_sfjs=#{sfjs},upral_jsrq=#{jsrq},upral_jsyy=#{jsyy}) where upral_orderid=@{coral_orderid} and upral_pdctid=@{pt_id};
+						update SRB_ACCOUNTINFO(acc_balance = #{balance}) where acc_user = @{coral_cstmid};
+					]]></value>
+				</button>
+				<!-- 仅允许check节点退回，final节点不允许退回 -->
+				<button name="nosqlBtn" label="不通过按钮核心处理" position="other" class="com.wbcs.system.buttons.ServerSQLActionButton" autoreportdata="true" successprompt="审核成功！" failedprompt="审核失败！">
+					<params>
+						<param name="whatbtn" value="!{whatbtn}"/>
+						<param name="note" value="!{note}"/>
+						<param name="uuid" value="uuid{}"/>
+						<param name="dtime" value="now{}" datatype="date{yyyy-MM-dd hh:ss:mm}"/>
+						<param name="cflowstatus" value="reject"/>
+					</params>
+					<value><![CDATA[
+						update SRB_FLOW_HISTORY(h_isok='1', h_enddatetime = #{dtime}) where h_cflowid = @{hflowid};
+						insert into SRB_FLOW_HISTORY(id=#{uuid}, h_cflowid='0', h_cflowstatus=#{cflowstatus}, @{h_coralid}, h_startdatetime=#{dtime}, h_note=#{note}, h_isok = '0');
+					]]></value>
+				</button>
+			</buttons>
+		</report>
+	</page>
+	<!-- 首页登录后左侧菜单树 -->
+	<page id="leftree" css="/webresources/css/jbsf/wbcsprjcore.css" interceptor="com.wbcs.jbsf.auth.interceptor.ItprSessionRole">
+		<report id="treemenusRpt" title="树结构实例" width="80%" align="center" pagesize="-1" interceptor="com.wbcs.jbsf.auth.interceptor.ItprHandleTreeNodeUrl" template="/webresources/pages/treedemo.jsp">
+			<display labeltdwidth="20%" valuetdwidth="80%" labelbgcolor="#f0f0f0" labelalign="right" valuealign="left" >
+				<col column="id" property="id"></col>
+				<col column="code"></col>
+				<col column="pid" property="pId"></col>
+				<col column="name" property="name"></col>
+				<col column="url" property="uri"></col>
+			</display>
+			<sql type="statement">
+				<select>
+					<value>
+						<![CDATA[
+						 	select distinct  a.id, a.code, a.pid, a.name, a.url from jbsf_authorize a 
+						 	where ismenu = 1 and 
+							a.id in(
+							   select distinct authid from  jbsf_roles_authes ra where 1=0 or {#condition#}
+							) and left(a.pid,4) like '#level#%'
+						]]>
+					</value>
+					<condition name="txtroleids" source="request{rolecodes}" keepkeywords="true">
+						<value>
+							<![CDATA[roleid in(#data#)]]>
+						</value>
+					</condition>
+					<condition name="level" ></condition>
+				</select>
+			</sql>
+		</report>
+	</page>
+</applications>

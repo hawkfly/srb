@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wbcs.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.applications.xsd">
+	<!--用户有效购买记录查询，按时间先后排序-->
+	<page id="gmjlPage" js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js">
+		  	<report id="gmjlRpt" type="editablelist2">
+				<display>
+					<col column="upral_id" displaytype="hidden"></col>
+					<col column="upral_cstmid" label="客户编号" displaytype="hidden"></col>
+					<col column="upral_pdctid" label="产品编号" displaytype="hidden"></col>
+					<col column="upral_orderid" label="订单编号" displaytype="hidden"></col>
+					<col column="upral_cstmname" label="用户名" ></col>
+					<col column="upral_cstmrealname" label="姓名" ></col>
+					<col column="upral_name" label="产品名称" align="left"></col>
+					<col column="upral_gmrq" label="购买日期"></col>
+					<col column="upral_tzqx" label="产品周期"></col>
+					<col column="upral_cjje" label="成交金额" datatype="float{#,##0.00}" align="right"></col>
+				</display>
+				<sql>
+					<select>
+						<value><![CDATA[select * from SRB_USER_PDCT where {#condition#} order by upral_gmrq desc]]></value>
+						<condition name="status" defaultvalue="0" hidden="true"><value><![CDATA[upral_sfjs = '#data#']]></value></condition>
+						<condition name="cdtstartdate" label="日期区间：" labelstyle="2">
+							<inputbox type="datepicker"></inputbox>
+							<value><![CDATA[upral_gmrq >= '#data#']]></value>
+						</condition>
+						<condition name="cdtenddate" label="~" labelstyle="2">
+							<inputbox type="datepicker"></inputbox>
+							<value><![CDATA[upral_gmrq <= '#data#']]></value>
+						</condition>
+					</select>
+					
+				</sql>
+			</report>
+	</page>
+	<!-- 用户借款申请查看 -->
+	<page id="jkapplyPage" js="/webresources/script/jquery-1.8.3.js,/webresources/jsplugins/jbsf/jbsfcore.js">
+	  	<report id="jkapplyRpt" type="editablelist2" rowselect="single">
+			<display>
+				<col column="jkrq_id" displaytype="hidden"></col>
+				<col column="jkrq_name" label="客户名称"></col>
+				<col column="jkrq_phone" label="联系方式"></col>
+				<col column="jkrq_jkje" label="接看金额" datatype="float{#,##0.00}" align="right"></col>
+				<col column="jkrq_qx" label="借款期限（月）" ></col>
+				<col column="jkrq_sqsj" label="申请时间" ></col>
+				<col column="jkrq_ywrbh" label="受理人编号" displaytype="hidden"></col>
+				<col column="jkrq_ywrname" label="受理人姓名"></col>
+				<col column="jkrq_slsj" label="受理时间"></col>
+				<col column="jkrq_status" label="受理状态"></col>
+			</display>
+			<sql>
+				<select>
+					<value><![CDATA[select * from SRB_JKAPPLY where {#condition#} order by jkrq_sqsj]]></value>
+					<condition name="status" label="">
+						<value><![CDATA[jkrq_status = '#data#']]></value>
+						<inputbox type="selectbox" defaultvalue="0">
+							<option label="全部" value="" type="false"></option>
+							<option label="未受理" value="0"></option>
+							<option label="已受理" value="1"></option>
+						</inputbox>
+					</condition>
+				</select>
+			</sql>
+			<buttons>
+				<button name="passsqlBtn" label="受理" position="searchbox" class="com.wbcs.system.buttons.ServerSQLActionButton" extends="${wbcs.button.default}" successprompt="已受理！" failedprompt="受理失败！" autoreportdata="true">
+					<params>
+						<param name="dtime" value="now{}" datatype="timestamp"/>
+						<param name="userid" value="session{userid}"/>
+					</params>
+					<value>
+						<![CDATA[update SRB_JKAPPLY set jkrq_status = '1', jkrq_slsj=#{dtime}, jkrq_ywrbh=#{userid}, jkrq_ywrname=(select realname from jbsf_user where id=#{userid}) where jkrq_id = @{jkrq_id}]]>
+					</value>
+				</button>
+			</buttons>
+			<format>
+				<value>
+					<![CDATA[
+						if("0".equals(jkrq_status)){
+							jkrq_status = "未受理";
+						}else if("1".equals(jkrq_status)){
+							jkrq_status = "已受理";
+						}
+					]]>
+				</value>
+			</format>
+		</report>
+	</page>
+</applications>

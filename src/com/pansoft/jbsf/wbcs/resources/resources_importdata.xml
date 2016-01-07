@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns="http://www.wbcs.com"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://www.wbcs.com ../xsd/wbcs.resources.xsd">
+	<resource key="dataimport.overwrite" 
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="pattern{\S*?.xls}"
+			 tablename="tbl_testimport1" importtype="overwrite"
+			 startdatarowindex="1" filepath="c:\test">
+			<columnmap type="index" matchmode="lazy"/><!-- 通过数据文件的字段位置与数据库表的字段位置自动匹配 -->
+		</dataimport>
+	</resource>
+	
+	<resource key="dataimport.append1"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data1.xls"
+			startdatarowindex="1"  tablename="tbl_testimport1" importtype="append"
+			keyfields="no;name" interceptor="" filepath="c:\test">
+			<columnmap type="index" matchmode="lazy"/><!-- 通过数据文件的字段位置与数据库表的字段位置自动匹配 -->
+		</dataimport>
+	</resource>
+	
+	<resource key="dataimport.append2"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data1.xls"
+			startdatarowindex="1"  tablename="tbl_testimport1" importtype="append"
+			interceptor="" filepath="c:\test">
+			<columnmap type="index" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+	
+	
+	<resource key="dataimport.index"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data1.xls"
+			startdatarowindex="1"  tablename="tbl_testimport1" importtype="overwrite" filepath="c:\test">
+			<columnmap type="index" exclusive="2;4" matchmode="lazy"/><!-- 通过数据文件的字段位置与数据库表的字段位置自动匹配，这里排除掉数据库表中第2和第4个字段不导入。字段位置都是从0开始 -->
+		</dataimport>
+	</resource>
+	
+	<resource key="dataimport.name"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data2.xls"
+			colnamerowindex="0"  tablename="tbl_testimport1" importtype="overwrite" filepath="c:\test">
+			<columnmap type="name" exclusive="birthday;name" matchmode="lazy"/><!-- 通过数据文件的字段名与数据库表的字段名自动匹配，这里排除掉数据库表中名为birthday和name两列不导入。 -->
+		</dataimport>
+	</resource>
+	
+	<resource key="dataimport.name.name"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data2.xls"
+			colnamerowindex="0"  tablename="tbl_testimport1" importtype="overwrite" filepath="c:\test">
+			<!-- 
+				显式指定从数据文件的哪个字段导入数据库表的哪个字段
+				配置映射关系时，等号左边为数据库，右边为数据文件，左边不能出现重复，右边可以出现重复，
+				即不能将数据库的一个字段从多个数据文件字段取值，但一个数据文件字段值可以赋给数据库的多个字段
+			 -->
+			<columnmap type="name=name" matchmode="lazy">
+				no=no;name=name;salary=salary;age=age;<!-- 只导这几个字段 -->
+			</columnmap>
+		</dataimport>
+	</resource>
+	
+	<resource key="dataimport.name.index"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data2.xls" 
+			startdatarowindex="1"  tablename="tbl_testimport1" importtype="overwrite" filepath="c:\test">
+			<!-- 
+				显式指定从数据文件的哪个位置的字段导入到数据库表的哪个字段名对应的字段中
+				配置映射关系时，等号左边为数据库，右边为数据文件，左边不能出现重复，右边可以出现重复，
+				即不能将数据库的一个字段从多个数据文件字段取值，但一个数据文件字段值可以赋给数据库的多个字段
+			 -->
+			<columnmap type="name=index" matchmode="lazy">
+				no=0;name=1;salary=4;<!-- 只导这几个字段 -->
+			</columnmap>
+		</dataimport>
+	</resource>
+
+	<resource key="dataimport.index.name"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data2.xls"
+			colnamerowindex="0"  tablename="tbl_testimport1" importtype="overwrite" filepath="c:\test">
+			<!-- 
+				显式指定从数据文件的哪个字段名的字段导入到数据库表的哪个位置的字段中
+				配置映射关系时，等号左边为数据库，右边为数据文件，左边不能出现重复，右边可以出现重复，
+				即不能将数据库的一个字段从多个数据文件字段取值，但一个数据文件字段值可以赋给数据库的多个字段
+			 -->
+			<columnmap type="index=name" matchmode="lazy">
+				0=no;2=age;4=salary;<!-- 只导这几个字段 -->
+			</columnmap>
+		</dataimport>
+	</resource>
+
+	<resource key="dataimport.index.index"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data2.xls"
+			startdatarowindex="1"  tablename="tbl_testimport1" importtype="overwrite" filepath="c:\test">
+			<!-- 
+				显式指定从数据文件的哪个位置的字段导入到数据库表的哪个位置的字段中，字段位置都是从0开始。
+				配置映射关系时，等号左边为数据库，右边为数据文件，左边不能出现重复，右边可以出现重复，
+				即不能将数据库的一个字段从多个数据文件字段取值，但一个数据文件字段值可以赋给数据库的多个字段
+			 -->
+			<columnmap type="index=index" matchmode="lazy">
+				0=1;1=1;4=4;<!-- 只导这几个字段 -->
+			</columnmap>
+		</dataimport>
+	</resource>
+
+	<resource key="dataimport.notitlerow"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data3.xls"
+			tablename="tbl_testimport1" importtype="append"
+			keyfields="no" filepath="c:\test">
+			<columnmap type="index" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+
+	<resource key="dataimport.complextitlerow"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data5.xls"
+			tablename="tbl_testimport1" importtype="overwrite"
+			startdatarowindex="3" filepath="c:\test">
+			<columnmap type="index" exclusive="4" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+
+	<resource key="dataimport.mixedtitlerow"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data6.xls" filepath="c:\test"
+			tablename="tbl_testimport1" importtype="overwrite"
+			colnamerowindex="4" startdatarowindex="6">
+			<columnmap type="name" exclusive="birthday" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+
+	<resource key="dataimport.interceptor"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data3.xls"
+			tablename="tbl_testimport1" importtype="append"
+			keyfields="no" filepath="c:\test">
+			<columnmap type="index" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+	
+	<resource key="dataimport.multifiles"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data4.xls"  filepath="c:\test"
+			colnamerowindex="0" tablename="tbl_testimport2" importtype="overwrite">
+			<columnmap type="name" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+
+	<resource key="dataimport.multifiles2"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="data2.xls" filepath="c:\test"
+			colnamerowindex="0"  tablename="tbl_testimport1" importtype="overwrite">
+			<columnmap type="name" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+
+	<resource key="resetdata1"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="originaldata.xls" sheet="员工基本信息"
+			startdatarowindex="1"  tablename="tbl_testimport1" importtype="overwrite" filepath="c:\test">
+			<columnmap type="index" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+	
+	<resource key="resetdata2"
+				 type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="originaldata.xls" sheet="index{1}"
+			colnamerowindex="0"  tablename="tbl_testimport2" importtype="overwrite" filepath="c:\test">
+			<columnmap type="name" matchmode="lazy"/>
+		</dataimport>
+	</resource>
+	<!-- 山东传媒网项目普通用户批量导入配置 -->
+	<!-- interceptor="com.hawkfly.interceptor.ItprSDCMPersonnelImportDatas" -->
+	<!-- <resource key="dataimport.sdcmwstudents" type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="pattern{[\s\S]*.xls}" tablename="t_user_info" importtype="append"  keyfields="id"
+					startdatarowindex="1" filepath="c:\test" interceptor="com.hawkfly.interceptor.ItprSDCMStudentsImportDatas">
+			<columnmap type="name=index" matchmode="lazy">
+				username=0;realname=1;sex=2;birthday=3;identitycardid=4;zzmm=5;mz=6;departmentid=7;majorid=8;grade=9;id=10;password=11;type=12;isadminuser=13;
+			</columnmap> 
+		</dataimport>
+	</resource> -->
+	<!-- 社区生活网缴费数据批量导入设置 -->
+	<!-- <resource key="dataimport.sqshchargingdatas" type="com.wbcs.config.resource.dataimport.DataImportRes">
+		<dataimport filetype="excel" filename="pattern{[\s\S]*.xls}" tablename="t_pay_info" importtype="append"  keyfields="id"
+					startdatarowindex="1" filepath="c:\test" interceptor="com.pansoft.jbsf.wbcs.interceptor.ItprSQSHChargingImportDatas">
+			<columnmap type="name=index" matchmode="lazy">
+				yz_id=1;pay_id=2;plan_date=3;plan_pay=4;start_date=5;end_date=6;start_num=7;end_num=8;pay_type=9;id=10;
+			</columnmap> 
+		</dataimport>
+	</resource> -->
+</resources>
